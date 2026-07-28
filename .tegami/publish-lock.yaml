@@ -1,0 +1,13 @@
+core:changelogs:
+  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Initial Release\n\nFirst official release of `effect-tanstack-query` — a type-safe bridge between **Effect HTTP API clients** and **TanStack Query**.\n\n### Features\n\n- **TanStack Query Options Proxy**: Automatically generate `queryOptions`, `mutationOptions`, and `getQueryKey` from Effect `HttpApiClient` endpoints using ES6 Proxies.\n- **End-to-End Type Safety**:\n  - Full type inference for `params`, `query`, `headers`, and `payload` schema inputs.\n  - Automatic resolution of `Success` and `Error` response types.\n  - Unwrap Effect `Schema` types seamlessly for TanStack Query options.\n- **Smart Arguments**: Supports optional input parameters when an endpoint requires no request parameters/payload.\n- **Effect Runtime Execution**: Seamlessly executes Effect pipelines as Promises backed by `ManagedRuntime` and supports request cancellation via `AbortSignal`.\n"
+    filename: 2026-07-28-ms4c4sko.md
+    v: 0.0.0
+core:packages:
+  - changelogIds:
+      - 2026-07-28-ms4c4sko.md
+    id: npm:@tiesen/effect-tanstack-query
+    updated: true
+npm:mark-latest:
+  - id: npm:@tiesen/effect-tanstack-query
+npm:packages:
+  - id: npm:@tiesen/effect-tanstack-query

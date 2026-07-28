@@ -1,10 +1,13 @@
 {
-  "name": "effect-tanstack-query",
-  "version": "0.0.0",
+  "name": "@tiesen/effect-tanstack-query",
+  "version": "0.0.1",
   "private": false,
   "type": "module",
   "module": "dist/index.mjs",
   "types": "dist/index.d.mts",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsdown",
     "format": "oxfmt --check",

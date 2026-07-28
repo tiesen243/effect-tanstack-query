@@ -1,9 +1,6 @@
----
-packages:
-  npm:effect-tanstack-query: patch
----
+## @tiesen/effect-tanstack-query@0.0.1
 
-## Initial Release
+### Initial Release
 
 First official release of `effect-tanstack-query` — a type-safe bridge between **Effect HTTP API clients** and **TanStack Query**.
 
