@@ -2,9 +2,18 @@
   "name": "@tiesen/effect-tanstack-query",
   "version": "0.0.1",
   "private": false,
+  "keywords": [
+    "effect",
+    "tanstack-intent",
+    "typesafe"
+  ],
   "type": "module",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.mts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.mts"
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
