@@ -12,8 +12,8 @@
         "typescript": "^7.0.2",
       },
       "peerDependencies": {
-        "@tanstack/react-query": ">=^5.100.0",
-        "effect": ">=^4.0.0-beta.100 || >=^4.0.0",
+        "@tanstack/react-query": ">=5.100.0",
+        "effect": ">=4.0.0-beta.100 || >=4.0.0",
       },
     },
   },
