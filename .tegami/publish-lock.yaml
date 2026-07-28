@@ -1,10 +1,10 @@
 core:changelogs:
-  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Fix exports\n\nFix the `exports` field in `package.json` to correctly expose package entry points and improve module resolution.\n"
-    filename: 2026-07-28-ms4ep3t9.md
+  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## fix publish\n"
+    filename: 2026-07-28-ms4hxq3t.md
     v: 0.0.0
 core:packages:
   - changelogIds:
-      - 2026-07-28-ms4ep3t9.md
+      - 2026-07-28-ms4hxq3t.md
     id: npm:@tiesen/effect-tanstack-query
     updated: true
 npm:packages:
