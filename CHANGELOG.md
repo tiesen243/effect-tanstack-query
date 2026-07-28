@@ -1,3 +1,9 @@
+## @tiesen/effect-tanstack-query@0.0.2
+
+### Fix exports
+
+Fix the `exports` field in `package.json` to correctly expose package entry points and improve module resolution.
+
 ## @tiesen/effect-tanstack-query@0.0.1
 
 ### Initial Release
