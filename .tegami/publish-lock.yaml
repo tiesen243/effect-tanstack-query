@@ -1,10 +1,10 @@
 core:changelogs:
-  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Fix publish\n"
-    filename: 2026-07-28-ms4j7p4f.md
+  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Update project metadata\n\n- add `bugs` tracker url\n- add `author` url\n"
+    filename: 2026-07-28-ms4jocsr.md
     v: 0.0.0
 core:packages:
   - changelogIds:
-      - 2026-07-28-ms4j7p4f.md
+      - 2026-07-28-ms4jocsr.md
     id: npm:@tiesen/effect-tanstack-query
     updated: true
 npm:packages:
