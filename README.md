@@ -14,14 +14,17 @@ A lightweight, type-safe bridge between **Effect HTTP API clients** and **TanSta
 Install using your preferred package manager:
 
 ```bash
+# Using npm
+npm install @tiesen/effect-tanstack-query
+
+# Using yarn
+yarn add @tiesen/effect-tanstack-query
+
 # Using bun
-bun add effect-tanstack-query
+bun add @tiesen/effect-tanstack-query
 
 # Using pnpm
-pnpm add effect-tanstack-query
-
-# Using npm
-npm install effect-tanstack-query`
+pnpm add @tiesen/effect-tanstack-query
 ```
 
 ## Quick Start
@@ -89,7 +92,7 @@ class ApiClient extends Context.Service<
 
 ```ts
 import { ManagedRuntime } from 'effect'
-import { createTanstackQueryOptionsProxy } from 'effect-tanstack-query'
+import { createTanstackQueryOptionsProxy } from '@tiesen/effect-tanstack-query'
 
 const runtime = ManagedRuntime.make(ApiClient.live)
 const api = createTanstackQueryOptionsProxy(ApiClient, runtime)
