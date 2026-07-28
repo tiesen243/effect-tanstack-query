@@ -1,3 +1,9 @@
+## @tiesen/effect-tanstack-query@0.0.4
+
+### Fix dependency
+
+- using `@tanstack/react-query` instead of `@tanstack/query-core`
+
 ## @tiesen/effect-tanstack-query@0.0.3
 
 ### fix publish

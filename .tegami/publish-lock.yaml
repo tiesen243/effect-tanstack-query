@@ -1,10 +1,10 @@
 core:changelogs:
-  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## fix publish\n"
-    filename: 2026-07-28-ms4hxq3t.md
+  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Fix dependency\n\n- using `@tanstack/react-query` instead of `@tanstack/query-core`\n"
+    filename: 2026-07-28-ms4ienez.md
     v: 0.0.0
 core:packages:
   - changelogIds:
-      - 2026-07-28-ms4hxq3t.md
+      - 2026-07-28-ms4ienez.md
     id: npm:@tiesen/effect-tanstack-query
     updated: true
 npm:packages:
