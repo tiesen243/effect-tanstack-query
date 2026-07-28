@@ -1,3 +1,10 @@
+## @tiesen/effect-tanstack-query@0.0.6
+
+### Update project metadata
+
+- add `bugs` tracker url
+- add `author` url
+
 ## @tiesen/effect-tanstack-query@0.0.5
 
 ### Fix publish
