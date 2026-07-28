@@ -1,0 +1,3093 @@
+diff --git a/dist/npm-DuzRdm-7.js b/dist/npm-DuzRdm-7.js
+index 26789f1dceafaa2b65e5a4fef4639fea73f8a13e..ca9c1343c8052f91a3b14d6758332dd6822d3bbc 100644
+--- a/dist/npm-DuzRdm-7.js
++++ b/dist/npm-DuzRdm-7.js
+@@ -1,1253 +1,1910 @@
+-import { a as isNodeError, c as joinPath, n as execFailure, r as fetchFailure, s as isCI } from "./error-CHuih1jU.js";
+-import { t as _accessExpressionAsString } from "./_accessExpressionAsString-DAz6bHI_.js";
+-import { n as _validateReport, t as _createStandardSchema } from "./_createStandardSchema-DFfVlh8x.js";
+-import { r as runPreflights, s as parsePublishLock, t as initPublishPlan } from "./publish-B25B1ix5.js";
+-import { t as _assertGuard } from "./_assertGuard-cQ6dIdMj.js";
+-import { n as WorkspacePackage } from "./graph-DaJ28Y4f.js";
+-import fs, { readFile, writeFile } from "node:fs/promises";
+-import path, { join } from "node:path";
+-import { x } from "tinyexec";
+-import * as semver$1 from "semver";
+-import { isSeq, parseDocument } from "yaml";
+-import process$1 from "node:process";
+-import { tmpdir } from "node:os";
+-import { intro, note, outro } from "@clack/prompts";
+-import { glob } from "tinyglobby";
++import { intro, note, outro } from '@clack/prompts'
++import fs, { readFile, writeFile } from 'node:fs/promises'
++import { tmpdir } from 'node:os'
++import path, { join } from 'node:path'
++import process$1 from 'node:process'
++import * as semver$1 from 'semver'
++import { x } from 'tinyexec'
++import { glob } from 'tinyglobby'
++import { isSeq, parseDocument } from 'yaml'
++
++import { t as _accessExpressionAsString } from './_accessExpressionAsString-DAz6bHI_.js'
++import { t as _assertGuard } from './_assertGuard-cQ6dIdMj.js'
++import {
++  n as _validateReport,
++  t as _createStandardSchema,
++} from './_createStandardSchema-DFfVlh8x.js'
++import {
++  a as isNodeError,
++  c as joinPath,
++  n as execFailure,
++  r as fetchFailure,
++  s as isCI,
++} from './error-CHuih1jU.js'
++import { n as WorkspacePackage } from './graph-DaJ28Y4f.js'
++import {
++  r as runPreflights,
++  s as parsePublishLock,
++  t as initPublishPlan,
++} from './publish-B25B1ix5.js'
+ //#region ../../node_modules/.pnpm/package-manager-detector@1.7.0/node_modules/package-manager-detector/dist/constants.mjs
+-const AGENTS = [
+-	"npm",
+-	"yarn",
+-	"yarn@berry",
+-	"pnpm",
+-	"pnpm@6",
+-	"bun",
+-	"deno",
+-	"nub",
+-	"aube"
+-];
++const AGENTS = new Set([
++  'npm',
++  'yarn',
++  'yarn@berry',
++  'pnpm',
++  'pnpm@6',
++  'bun',
++  'deno',
++  'nub',
++  'aube',
++])
+ const LOCKS = {
+-	"aube-lock.yaml": "aube",
+-	"aube-workspace.yaml": "aube",
+-	"bun.lock": "bun",
+-	"bun.lockb": "bun",
+-	"deno.lock": "deno",
+-	"pnpm-lock.yaml": "pnpm",
+-	"pnpm-workspace.yaml": "pnpm",
+-	"yarn.lock": "yarn",
+-	"package-lock.json": "npm",
+-	"npm-shrinkwrap.json": "npm"
+-};
++  'aube-lock.yaml': 'aube',
++  'aube-workspace.yaml': 'aube',
++  'bun.lock': 'bun',
++  'bun.lockb': 'bun',
++  'deno.lock': 'deno',
++  'pnpm-lock.yaml': 'pnpm',
++  'pnpm-workspace.yaml': 'pnpm',
++  'yarn.lock': 'yarn',
++  'package-lock.json': 'npm',
++  'npm-shrinkwrap.json': 'npm',
++}
+ const INSTALL_METADATA = {
+-	"node_modules/.aube/": "aube",
+-	"node_modules/.deno/": "deno",
+-	"node_modules/.pnpm/": "pnpm",
+-	"node_modules/.yarn-state.yml": "yarn",
+-	"node_modules/.yarn_integrity": "yarn",
+-	"node_modules/.package-lock.json": "npm",
+-	".pnp.cjs": "yarn",
+-	".pnp.js": "yarn",
+-	"bun.lock": "bun",
+-	"bun.lockb": "bun"
+-};
++  'node_modules/.aube/': 'aube',
++  'node_modules/.deno/': 'deno',
++  'node_modules/.pnpm/': 'pnpm',
++  'node_modules/.yarn-state.yml': 'yarn',
++  'node_modules/.yarn_integrity': 'yarn',
++  'node_modules/.package-lock.json': 'npm',
++  '.pnp.cjs': 'yarn',
++  '.pnp.js': 'yarn',
++  'bun.lock': 'bun',
++  'bun.lockb': 'bun',
++}
+ //#endregion
+ //#region ../../node_modules/.pnpm/package-manager-detector@1.7.0/node_modules/package-manager-detector/dist/detect.mjs
+ async function pathExists(path2, type) {
+-	try {
+-		const stat = await fs.stat(path2);
+-		return type === "file" ? stat.isFile() : stat.isDirectory();
+-	} catch {
+-		return false;
+-	}
++  try {
++    const stat = await fs.stat(path2)
++    return type === 'file' ? stat.isFile() : stat.isDirectory()
++  } catch {
++    return false
++  }
+ }
+ function* lookup(cwd = process$1.cwd()) {
+-	let directory = path.resolve(cwd);
+-	const { root } = path.parse(directory);
+-	while (directory && directory !== root) {
+-		yield directory;
+-		directory = path.dirname(directory);
+-	}
++  let directory = path.resolve(cwd)
++  const { root } = path.parse(directory)
++  while (directory && directory !== root) {
++    yield directory
++    directory = path.dirname(directory)
++  }
+ }
+ async function parsePackageJson(filepath, options) {
+-	if (!filepath || !await pathExists(filepath, "file")) return null;
+-	return await handlePackageManager(filepath, options);
++  if (!filepath || !(await pathExists(filepath, 'file'))) return null
++  return await handlePackageManager(filepath, options)
+ }
+ async function detect(options = {}) {
+-	const { cwd, strategies = [
+-		"lockfile",
+-		"packageManager-field",
+-		"devEngines-field"
+-	] } = options;
+-	let stopDir;
+-	if (typeof options.stopDir === "string") {
+-		const resolved = path.resolve(options.stopDir);
+-		stopDir = (dir) => dir === resolved;
+-	} else stopDir = options.stopDir;
+-	for (const directory of lookup(cwd)) {
+-		for (const strategy of strategies) switch (strategy) {
+-			case "lockfile":
+-				for (const lock of Object.keys(LOCKS)) if (await pathExists(path.join(directory, lock), "file")) {
+-					const name = LOCKS[lock];
+-					const result = await parsePackageJson(path.join(directory, "package.json"), options);
+-					if (result) return result;
+-					else return {
+-						name,
+-						agent: name
+-					};
+-				}
+-				break;
+-			case "packageManager-field":
+-			case "devEngines-field": {
+-				const result = await parsePackageJson(path.join(directory, "package.json"), options);
+-				if (result) return result;
+-				break;
+-			}
+-			case "install-metadata":
+-				for (const metadata of Object.keys(INSTALL_METADATA)) {
+-					const fileOrDir = metadata.endsWith("/") ? "dir" : "file";
+-					if (await pathExists(path.join(directory, metadata), fileOrDir)) {
+-						const name = INSTALL_METADATA[metadata];
+-						return {
+-							name,
+-							agent: name === "yarn" ? isMetadataYarnClassic(metadata) ? "yarn" : "yarn@berry" : name
+-						};
+-					}
+-				}
+-				break;
+-		}
+-		if (stopDir?.(directory)) break;
+-	}
+-	return null;
++  const {
++    cwd,
++    strategies = ['lockfile', 'packageManager-field', 'devEngines-field'],
++  } = options
++  let stopDir
++  if (typeof options.stopDir === 'string') {
++    const resolved = path.resolve(options.stopDir)
++    stopDir = (dir) => dir === resolved
++  } else stopDir = options.stopDir
++  for (const directory of lookup(cwd)) {
++    for (const strategy of strategies)
++      switch (strategy) {
++        case 'lockfile':
++          for (const lock of Object.keys(LOCKS))
++            if (await pathExists(path.join(directory, lock), 'file')) {
++              const name = LOCKS[lock]
++              const result = await parsePackageJson(
++                path.join(directory, 'package.json'),
++                options
++              )
++              if (result) return result
++              else
++                return {
++                  name,
++                  agent: name,
++                }
++            }
++          break
++        case 'packageManager-field':
++        case 'devEngines-field': {
++          const result = await parsePackageJson(
++            path.join(directory, 'package.json'),
++            options
++          )
++          if (result) return result
++          break
++        }
++        case 'install-metadata':
++          for (const metadata of Object.keys(INSTALL_METADATA)) {
++            const fileOrDir = metadata.endsWith('/') ? 'dir' : 'file'
++            if (await pathExists(path.join(directory, metadata), fileOrDir)) {
++              const name = INSTALL_METADATA[metadata]
++              return {
++                name,
++                agent:
++                  name === 'yarn'
++                    ? isMetadataYarnClassic(metadata)
++                      ? 'yarn'
++                      : 'yarn@berry'
++                    : name,
++              }
++            }
++          }
++          break
++      }
++    if (stopDir?.(directory)) break
++  }
++  return null
+ }
+ function getNameAndVer(pkg) {
+-	const handelVer = (version) => version?.match(/\d+(\.\d+){0,2}/)?.[0] ?? version;
+-	if (typeof pkg.packageManager === "string") {
+-		const [name, ver] = pkg.packageManager.replace(/^\^/, "").split("@");
+-		return {
+-			name,
+-			ver: handelVer(ver)
+-		};
+-	}
+-	if (typeof pkg.devEngines?.packageManager?.name === "string") return {
+-		name: pkg.devEngines.packageManager.name,
+-		ver: handelVer(pkg.devEngines.packageManager.version)
+-	};
++  const handelVer = (version) =>
++    version?.match(/\d+(\.\d+){0,2}/)?.[0] ?? version
++  if (typeof pkg.packageManager === 'string') {
++    const [name, ver] = pkg.packageManager.replace(/^\^/, '').split('@')
++    return {
++      name,
++      ver: handelVer(ver),
++    }
++  }
++  if (typeof pkg.devEngines?.packageManager?.name === 'string')
++    return {
++      name: pkg.devEngines.packageManager.name,
++      ver: handelVer(pkg.devEngines.packageManager.version),
++    }
+ }
+ async function handlePackageManager(filepath, options) {
+-	try {
+-		const content = await fs.readFile(filepath, "utf8");
+-		const pkg = options.packageJsonParser ? await options.packageJsonParser(content, filepath) : JSON.parse(content);
+-		let agent;
+-		const nameAndVer = getNameAndVer(pkg);
+-		if (nameAndVer) {
+-			const name = nameAndVer.name;
+-			const ver = nameAndVer.ver;
+-			let version = ver;
+-			if (name === "yarn" && ver && Number.parseInt(ver) > 1) {
+-				agent = "yarn@berry";
+-				version = "berry";
+-				return {
+-					name,
+-					agent,
+-					version
+-				};
+-			} else if (name === "pnpm" && ver && Number.parseInt(ver) < 7) {
+-				agent = "pnpm@6";
+-				return {
+-					name,
+-					agent,
+-					version
+-				};
+-			} else if (AGENTS.includes(name)) {
+-				agent = name;
+-				return {
+-					name,
+-					agent,
+-					version
+-				};
+-			} else return options.onUnknown?.(pkg.packageManager) ?? null;
+-		}
+-	} catch {}
+-	return null;
++  try {
++    const content = await fs.readFile(filepath, 'utf8')
++    const pkg = options.packageJsonParser
++      ? await options.packageJsonParser(content, filepath)
++      : JSON.parse(content)
++    let agent
++    const nameAndVer = getNameAndVer(pkg)
++    if (nameAndVer) {
++      const name = nameAndVer.name
++      const ver = nameAndVer.ver
++      let version = ver
++      if (name === 'yarn' && ver && Number.parseInt(ver) > 1) {
++        agent = 'yarn@berry'
++        version = 'berry'
++        return {
++          name,
++          agent,
++          version,
++        }
++      } else if (name === 'pnpm' && ver && Number.parseInt(ver) < 7) {
++        agent = 'pnpm@6'
++        return {
++          name,
++          agent,
++          version,
++        }
++      } else if (AGENTS.has(name)) {
++        agent = name
++        return {
++          name,
++          agent,
++          version,
++        }
++      }return options.onUnknown?.(pkg.packageManager) ?? null
++    }
++  } catch {}
++  return null
+ }
+ function isMetadataYarnClassic(metadataPath) {
+-	return metadataPath.endsWith(".yarn_integrity");
++  return metadataPath.endsWith('.yarn_integrity')
+ }
+ //#endregion
+ //#region src/providers/npm/cli.ts
+-const PLACEHOLDER_VERSION = "0.0.0-tegami-trusted-publish-setup";
+-const PLACEHOLDER_DIST_TAG = "temp";
++const PLACEHOLDER_VERSION = '0.0.0-tegami-trusted-publish-setup'
++const PLACEHOLDER_DIST_TAG = 'temp'
+ const PROJECT_FLAG = {
+-	gitlab: "--project",
+-	github: "--repo"
+-};
++  gitlab: '--project',
++  github: '--repo',
++}
+ function registerNpmCli(cli, options) {
+-	cli.command("npm pretrust", { description: "publish empty placeholder packages and configure npm trusted publishing for new packages" }).option("dry-run", {
+-		type: "boolean",
+-		description: "show packages that would be configured without publishing"
+-	}).action(async ({ context, values }) => {
+-		intro("npm pretrust");
+-		if (!context.graph.getPackages().some((pkg) => pkg instanceof NpmPackage)) throw new Error("No npm packages found in the workspace.");
+-		const dryRun = values["dry-run"] ?? false;
+-		let repo;
+-		if (options.provider === "github") {
+-			if (!context.github?.repo) throw new Error("The GitHub plugin must be configured with `repo` specified.");
+-			repo = context.github.repo;
+-		} else if (options.provider === "gitlab") {
+-			if (!context.gitlab?.repo) throw new Error("The GitLab plugin must be configured with `repo` specified.");
+-			repo = context.gitlab.repo;
+-		} else throw new Error(`Invalid npm trusted publishing provider: ${options.provider}`);
+-		const targets = await resolvePretrustTargets(context);
+-		if (targets.length === 0) {
+-			outro("All publishable packages in the publish lock already exist on npm.");
+-			return;
+-		}
+-		const prepareLines = ["Make sure to run login command first, it will publish empty packages."];
+-		for (const pkg of targets) prepareLines.push(`${pkg.name}: will publish a placeholder under dist-tag "${PLACEHOLDER_DIST_TAG}", then configure trusted publishing.`);
+-		note(prepareLines.join("\n"), dryRun ? "Dry run" : "Configure trusted publishing");
+-		const lines = [];
+-		let lock;
+-		if (!dryRun) try {
+-			lock = parsePublishLock(await fs.readFile(context.lockPath, "utf8"));
+-		} catch {}
+-		for (const pkg of targets) {
+-			if (dryRun) {
+-				lines.push(`would configure ${pkg.name} (placeholder ${PLACEHOLDER_VERSION}@${PLACEHOLDER_DIST_TAG})`);
+-				continue;
+-			}
+-			await publishPlaceholder(pkg);
+-			await npmTrust(context, pkg, options, repo);
+-			lines.push(`configured ${pkg.name} (placeholder ${PLACEHOLDER_VERSION}@${PLACEHOLDER_DIST_TAG})`);
+-			lock?.write("npm:mark-latest", { id: pkg.id });
+-		}
+-		if (lock) await fs.writeFile(context.lockPath, lock.serialize());
+-		note(lines.join("\n"), "Result");
+-		outro(dryRun ? "Dry run complete. Re-run without --dry-run to publish placeholders and configure trusted publishing." : "Trusted publishing configured. CI can now publish real package versions with OIDC.");
+-	});
++  cli
++    .command('npm pretrust', {
++      description:
++        'publish empty placeholder packages and configure npm trusted publishing for new packages',
++    })
++    .option('dry-run', {
++      type: 'boolean',
++      description: 'show packages that would be configured without publishing',
++    })
++    .action(async ({ context, values }) => {
++      intro('npm pretrust')
++      if (!context.graph.getPackages().some((pkg) => pkg instanceof NpmPackage))
++        throw new Error('No npm packages found in the workspace.')
++      const dryRun = values['dry-run'] ?? false
++      let repo
++      if (options.provider === 'github') {
++        if (!context.github?.repo)
++          throw new Error(
++            'The GitHub plugin must be configured with `repo` specified.'
++          )
++        repo = context.github.repo
++      } else if (options.provider === 'gitlab') {
++        if (!context.gitlab?.repo)
++          throw new Error(
++            'The GitLab plugin must be configured with `repo` specified.'
++          )
++        repo = context.gitlab.repo
++      } else
++        throw new Error(
++          `Invalid npm trusted publishing provider: ${options.provider}`
++        )
++      const targets = await resolvePretrustTargets(context)
++      if (targets.length === 0) {
++        outro(
++          'All publishable packages in the publish lock already exist on npm.'
++        )
++        return
++      }
++      const prepareLines = [
++        'Make sure to run login command first, it will publish empty packages.',
++      ]
++      for (const pkg of targets)
++        prepareLines.push(
++          `${pkg.name}: will publish a placeholder under dist-tag "${PLACEHOLDER_DIST_TAG}", then configure trusted publishing.`
++        )
++      note(
++        prepareLines.join('\n'),
++        dryRun ? 'Dry run' : 'Configure trusted publishing'
++      )
++      const lines = []
++      let lock
++      if (!dryRun)
++        try {
++          lock = parsePublishLock(await fs.readFile(context.lockPath, 'utf8'))
++        } catch {}
++      for (const pkg of targets) {
++        if (dryRun) {
++          lines.push(
++            `would configure ${pkg.name} (placeholder ${PLACEHOLDER_VERSION}@${PLACEHOLDER_DIST_TAG})`
++          )
++          continue
++        }
++        await publishPlaceholder(pkg)
++        await npmTrust(context, pkg, options, repo)
++        lines.push(
++          `configured ${pkg.name} (placeholder ${PLACEHOLDER_VERSION}@${PLACEHOLDER_DIST_TAG})`
++        )
++        lock?.write('npm:mark-latest', { id: pkg.id })
++      }
++      if (lock) await fs.writeFile(context.lockPath, lock.serialize())
++      note(lines.join('\n'), 'Result')
++      outro(
++        dryRun
++          ? 'Dry run complete. Re-run without --dry-run to publish placeholders and configure trusted publishing.'
++          : 'Trusted publishing configured. CI can now publish real package versions with OIDC.'
++      )
++    })
+ }
+ async function resolvePretrustTargets(context) {
+-	const plan = await initPublishPlan(context, {});
+-	if (!plan) throw new Error(`No publish lock found at ${context.lockPath}. Run "tegami version" before configuring trusted publishing.`);
+-	await runPreflights(context, plan);
+-	return (await Promise.all(Array.from(plan.packages, async ([id, { preflight }]) => {
+-		if (!preflight?.shouldPublish) return;
+-		const pkg = context.graph.get(id);
+-		if (!pkg || !(pkg instanceof NpmPackage)) return;
+-		if (await isPackageOnRegistry(pkg.name, pkg.getRegistry())) return;
+-		return pkg;
+-	}))).filter((pkg) => pkg !== void 0);
++  const plan = await initPublishPlan(context, {})
++  if (!plan)
++    throw new Error(
++      `No publish lock found at ${context.lockPath}. Run "tegami version" before configuring trusted publishing.`
++    )
++  await runPreflights(context, plan)
++  return (
++    await Promise.all(
++      Array.from(plan.packages, async ([id, { preflight }]) => {
++        if (!preflight?.shouldPublish) return
++        const pkg = context.graph.get(id)
++        if (!pkg || !(pkg instanceof NpmPackage)) return
++        if (await isPackageOnRegistry(pkg.name, pkg.getRegistry())) return
++        return pkg
++      })
++    )
++  ).filter((pkg) => pkg !== void 0)
+ }
+-async function isPackageOnRegistry(name, registry = "https://registry.npmjs.org") {
+-	const response = await fetch(joinPath(registry, name), { headers: { Accept: "application/json" } });
+-	if (response.status === 404) return false;
+-	if (!response.ok) throw await fetchFailure(`Unable to check whether ${name} exists on the npm registry${registry ? ` "${registry}"` : ""}`, response);
+-	return true;
++async function isPackageOnRegistry(
++  name,
++  registry = 'https://registry.npmjs.org'
++) {
++  const response = await fetch(joinPath(registry, name), {
++    headers: { Accept: 'application/json' },
++  })
++  if (response.status === 404) return false
++  if (!response.ok)
++    throw await fetchFailure(
++      `Unable to check whether ${name} exists on the npm registry${registry ? ` "${registry}"` : ''}`,
++      response
++    )
++  return true
+ }
+ async function publishPlaceholder(pkg) {
+-	const registry = pkg.getRegistry();
+-	const access = pkg.manifest.publishConfig?.access;
+-	const dir = await fs.mkdtemp(join(tmpdir(), "tegami-npm-placeholder-"));
+-	try {
+-		await Promise.all([fs.writeFile(join(dir, "package.json"), `${JSON.stringify({
+-			name: pkg.name,
+-			version: PLACEHOLDER_VERSION,
+-			description: "Placeholder published by Tegami for npm trusted publishing setup."
+-		}, null, 2)}\n`), fs.writeFile(join(dir, "README.md"), `# Placeholder package
++  const registry = pkg.getRegistry()
++  const access = pkg.manifest.publishConfig?.access
++  const dir = await fs.mkdtemp(join(tmpdir(), 'tegami-npm-placeholder-'))
++  try {
++    await Promise.all([
++      fs.writeFile(
++        join(dir, 'package.json'),
++        `${JSON.stringify(
++          {
++            name: pkg.name,
++            version: PLACEHOLDER_VERSION,
++            description:
++              'Placeholder published by Tegami for npm trusted publishing setup.',
++          },
++          null,
++          2
++        )}\n`
++      ),
++      fs.writeFile(
++        join(dir, 'README.md'),
++        `# Placeholder package
+   
+   This empty package was published by [Tegami](https://tegami.fuma-nama.dev) to configure npm trusted publishing.
+   
+   The real package contents will be published via CI with OIDC.
+-  `)]);
+-		const args = [
+-			"publish",
+-			"--tag",
+-			PLACEHOLDER_DIST_TAG,
+-			"--ignore-scripts",
+-			"--registry",
+-			registry
+-		];
+-		if (access) args.push("--access", access);
+-		const result = await x("npm", args, { nodeOptions: {
+-			cwd: dir,
+-			stdio: "inherit"
+-		} });
+-		if (result.exitCode !== 0) {
+-			const hint = result.stderr.includes("EOTP") ? " Complete npm 2FA in the terminal, or publish with an OTP-capable session." : "";
+-			throw execFailure(`Failed to publish placeholder ${pkg.name}@${PLACEHOLDER_VERSION} with dist-tag "${PLACEHOLDER_DIST_TAG}".${hint}`, result);
+-		}
+-	} finally {
+-		await fs.rm(dir, {
+-			recursive: true,
+-			force: true
+-		});
+-	}
++  `
++      ),
++    ])
++    const args = [
++      'publish',
++      '--tag',
++      PLACEHOLDER_DIST_TAG,
++      '--ignore-scripts',
++      '--registry',
++      registry,
++    ]
++    if (access) args.push('--access', access)
++    const result = await x('npm', args, {
++      nodeOptions: {
++        cwd: dir,
++        stdio: 'inherit',
++      },
++    })
++    if (result.exitCode !== 0) {
++      const hint = result.stderr.includes('EOTP')
++        ? ' Complete npm 2FA in the terminal, or publish with an OTP-capable session.'
++        : ''
++      throw execFailure(
++        `Failed to publish placeholder ${pkg.name}@${PLACEHOLDER_VERSION} with dist-tag "${PLACEHOLDER_DIST_TAG}".${hint}`,
++        result
++      )
++    }
++  } finally {
++    await fs.rm(dir, {
++      recursive: true,
++      force: true,
++    })
++  }
+ }
+ async function npmTrust(context, pkg, options, repo) {
+-	const result = await x("npm", [
+-		"trust",
+-		options.provider,
+-		pkg.name,
+-		PROJECT_FLAG[options.provider],
+-		repo,
+-		"--file",
+-		options.workflow,
+-		"--allow-publish",
+-		"-y",
+-		"--registry",
+-		pkg.getRegistry()
+-	], { nodeOptions: {
+-		cwd: context.cwd,
+-		stdio: "inherit"
+-	} });
+-	if (result.exitCode !== 0) {
+-		const hint = result.stderr.includes("EOTP") ? " Complete npm 2FA in the terminal when prompted." : "";
+-		throw execFailure(`Failed to configure trusted publishing for ${pkg.name}.${hint}`, result);
+-	}
++  const result = await x(
++    'npm',
++    [
++      'trust',
++      options.provider,
++      pkg.name,
++      PROJECT_FLAG[options.provider],
++      repo,
++      '--file',
++      options.workflow,
++      '--allow-publish',
++      '-y',
++      '--registry',
++      pkg.getRegistry(),
++    ],
++    {
++      nodeOptions: {
++        cwd: context.cwd,
++        stdio: 'inherit',
++      },
++    }
++  )
++  if (result.exitCode !== 0) {
++    const hint = result.stderr.includes('EOTP')
++      ? ' Complete npm 2FA in the terminal when prompted.'
++      : ''
++    throw execFailure(
++      `Failed to configure trusted publishing for ${pkg.name}.${hint}`,
++      result
++    )
++  }
+ }
+ //#endregion
+ //#region src/providers/npm/graph.ts
+-var NpmPackage = class extends WorkspacePackage {
+-	path;
+-	manifest;
+-	manager = "npm";
+-	dependencies;
+-	constructor(path, manifest) {
+-		super();
+-		this.path = path;
+-		this.manifest = manifest;
+-	}
+-	get name() {
+-		return this.manifest.name;
+-	}
+-	get version() {
+-		return this.manifest.version;
+-	}
+-	async write() {
+-		await writeFile(path.join(this.path, "package.json"), `${JSON.stringify(this.manifest, null, 2)}\n`);
+-	}
+-	initDraft() {
+-		const defaults = super.initDraft();
+-		defaults.npm = { distTag: this.manifest.publishConfig?.tag };
+-		return defaults;
+-	}
+-	getRegistry() {
+-		return this.manifest.publishConfig?.registry ?? "https://registry.npmjs.org";
+-	}
+-	configureDraft({ draft }) {
+-		super.configureDraft({ draft });
+-		const { distTag = this.group?.options?.npm?.distTag } = this.options.npm ?? {};
+-		if (distTag) {
+-			draft.npm ??= {};
+-			draft.npm.distTag = distTag;
+-		} else if (draft.prerelease) {
+-			draft.npm ??= {};
+-			draft.npm.distTag ??= draft.prerelease;
+-		}
+-	}
+-	listDependencies(graph) {
+-		return this.dependencies ??= listDependencies(graph, this);
+-	}
+-};
++const NpmPackage = class extends WorkspacePackage {
++  path
++  manifest
++  manager = 'npm'
++  dependencies
++  constructor(path, manifest) {
++    super()
++    this.path = path
++    this.manifest = manifest
++  }
++  get name() {
++    return this.manifest.name
++  }
++  get version() {
++    return this.manifest.version
++  }
++  async write() {
++    await writeFile(
++      path.join(this.path, 'package.json'),
++      `${JSON.stringify(this.manifest, null, 2)}\n`
++    )
++  }
++  initDraft() {
++    const defaults = super.initDraft()
++    defaults.npm = { distTag: this.manifest.publishConfig?.tag }
++    return defaults
++  }
++  getRegistry() {
++    return this.manifest.publishConfig?.registry ?? 'https://registry.npmjs.org'
++  }
++  configureDraft({ draft }) {
++    super.configureDraft({ draft })
++    const { distTag = this.group?.options?.npm?.distTag } =
++      this.options.npm ?? {}
++    if (distTag) {
++      draft.npm ??= {}
++      draft.npm.distTag = distTag
++    } else if (draft.prerelease) {
++      draft.npm ??= {}
++      draft.npm.distTag ??= draft.prerelease
++    }
++  }
++  listDependencies(graph) {
++    return (this.dependencies ??= listDependencies(graph, this))
++  }
++}
+ const assertPackageManifest = (() => {
+-	const _io0 = (input) => "string" === typeof input.name && (void 0 === input.version || "string" === typeof input.version) && (void 0 === input["private"] || "boolean" === typeof input["private"]) && (void 0 === input.publishConfig || "object" === typeof input.publishConfig && null !== input.publishConfig && false === Array.isArray(input.publishConfig) && _io1(input.publishConfig)) && (void 0 === input.scripts || "object" === typeof input.scripts && null !== input.scripts && false === Array.isArray(input.scripts) && _io2(input.scripts)) && null !== input.workspaces && (void 0 === input.workspaces || Array.isArray(input.workspaces) && input.workspaces.every((elem) => "string" === typeof elem) || "object" === typeof input.workspaces && null !== input.workspaces && false === Array.isArray(input.workspaces) && _io3(input.workspaces)) && (void 0 === input.catalog || "object" === typeof input.catalog && null !== input.catalog && false === Array.isArray(input.catalog) && _io2(input.catalog)) && (void 0 === input.catalogs || "object" === typeof input.catalogs && null !== input.catalogs && false === Array.isArray(input.catalogs) && _io4(input.catalogs)) && (void 0 === input.dependencies || "object" === typeof input.dependencies && null !== input.dependencies && false === Array.isArray(input.dependencies) && _io2(input.dependencies)) && (void 0 === input.devDependencies || "object" === typeof input.devDependencies && null !== input.devDependencies && false === Array.isArray(input.devDependencies) && _io2(input.devDependencies)) && (void 0 === input.peerDependencies || "object" === typeof input.peerDependencies && null !== input.peerDependencies && false === Array.isArray(input.peerDependencies) && _io2(input.peerDependencies)) && (void 0 === input.optionalDependencies || "object" === typeof input.optionalDependencies && null !== input.optionalDependencies && false === Array.isArray(input.optionalDependencies) && _io2(input.optionalDependencies));
+-	const _io1 = (input) => (void 0 === input.access || "public" === input.access || "restricted" === input.access) && (void 0 === input.registry || "string" === typeof input.registry) && (void 0 === input.tag || "string" === typeof input.tag);
+-	const _io2 = (input) => Object.keys(input).every((key) => {
+-		const value = input[key];
+-		if (void 0 === value) return true;
+-		return "string" === typeof value;
+-	});
+-	const _io3 = (input) => (void 0 === input.packages || Array.isArray(input.packages) && input.packages.every((elem) => "string" === typeof elem)) && (void 0 === input.catalog || "object" === typeof input.catalog && null !== input.catalog && false === Array.isArray(input.catalog) && _io2(input.catalog)) && (void 0 === input.catalogs || "object" === typeof input.catalogs && null !== input.catalogs && false === Array.isArray(input.catalogs) && _io4(input.catalogs));
+-	const _io4 = (input) => Object.keys(input).every((key) => {
+-		const value = input[key];
+-		if (void 0 === value) return true;
+-		return "object" === typeof value && null !== value && false === Array.isArray(value) && _io2(value);
+-	});
+-	const _ao0 = (input, _path, _exceptionable = true) => ("string" === typeof input.name || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".name",
+-		expected: "string",
+-		value: input.name
+-	}, _errorFactory)) && (void 0 === input.version || "string" === typeof input.version || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".version",
+-		expected: "(string | undefined)",
+-		value: input.version
+-	}, _errorFactory)) && (void 0 === input["private"] || "boolean" === typeof input["private"] || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + "[\"private\"]",
+-		expected: "(boolean | undefined)",
+-		value: input["private"]
+-	}, _errorFactory)) && (void 0 === input.publishConfig || ("object" === typeof input.publishConfig && null !== input.publishConfig && false === Array.isArray(input.publishConfig) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".publishConfig",
+-		expected: "(__type | undefined)",
+-		value: input.publishConfig
+-	}, _errorFactory)) && _ao1(input.publishConfig, _path + ".publishConfig", _exceptionable) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".publishConfig",
+-		expected: "(__type | undefined)",
+-		value: input.publishConfig
+-	}, _errorFactory)) && (void 0 === input.scripts || ("object" === typeof input.scripts && null !== input.scripts && false === Array.isArray(input.scripts) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".scripts",
+-		expected: "(Record<string, string> | undefined)",
+-		value: input.scripts
+-	}, _errorFactory)) && _ao2(input.scripts, _path + ".scripts", _exceptionable) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".scripts",
+-		expected: "(Record<string, string> | undefined)",
+-		value: input.scripts
+-	}, _errorFactory)) && (null !== input.workspaces || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".workspaces",
+-		expected: "(Array<string> | BunWorkspaces | undefined)",
+-		value: input.workspaces
+-	}, _errorFactory)) && (void 0 === input.workspaces || Array.isArray(input.workspaces) && input.workspaces.every((elem, _index3) => "string" === typeof elem || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".workspaces[" + _index3 + "]",
+-		expected: "string",
+-		value: elem
+-	}, _errorFactory)) || "object" === typeof input.workspaces && null !== input.workspaces && false === Array.isArray(input.workspaces) && _ao3(input.workspaces, _path + ".workspaces", _exceptionable) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".workspaces",
+-		expected: "(Array<string> | BunWorkspaces | undefined)",
+-		value: input.workspaces
+-	}, _errorFactory) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".workspaces",
+-		expected: "(Array<string> | BunWorkspaces | undefined)",
+-		value: input.workspaces
+-	}, _errorFactory)) && (void 0 === input.catalog || ("object" === typeof input.catalog && null !== input.catalog && false === Array.isArray(input.catalog) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".catalog",
+-		expected: "(Record<string, string> | undefined)",
+-		value: input.catalog
+-	}, _errorFactory)) && _ao2(input.catalog, _path + ".catalog", _exceptionable) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".catalog",
+-		expected: "(Record<string, string> | undefined)",
+-		value: input.catalog
+-	}, _errorFactory)) && (void 0 === input.catalogs || ("object" === typeof input.catalogs && null !== input.catalogs && false === Array.isArray(input.catalogs) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".catalogs",
+-		expected: "(Record<string, Record<string, string>> | undefined)",
+-		value: input.catalogs
+-	}, _errorFactory)) && _ao4(input.catalogs, _path + ".catalogs", _exceptionable) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".catalogs",
+-		expected: "(Record<string, Record<string, string>> | undefined)",
+-		value: input.catalogs
+-	}, _errorFactory)) && (void 0 === input.dependencies || ("object" === typeof input.dependencies && null !== input.dependencies && false === Array.isArray(input.dependencies) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".dependencies",
+-		expected: "(Record<string, string> | undefined)",
+-		value: input.dependencies
+-	}, _errorFactory)) && _ao2(input.dependencies, _path + ".dependencies", _exceptionable) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".dependencies",
+-		expected: "(Record<string, string> | undefined)",
+-		value: input.dependencies
+-	}, _errorFactory)) && (void 0 === input.devDependencies || ("object" === typeof input.devDependencies && null !== input.devDependencies && false === Array.isArray(input.devDependencies) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".devDependencies",
+-		expected: "(Record<string, string> | undefined)",
+-		value: input.devDependencies
+-	}, _errorFactory)) && _ao2(input.devDependencies, _path + ".devDependencies", _exceptionable) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".devDependencies",
+-		expected: "(Record<string, string> | undefined)",
+-		value: input.devDependencies
+-	}, _errorFactory)) && (void 0 === input.peerDependencies || ("object" === typeof input.peerDependencies && null !== input.peerDependencies && false === Array.isArray(input.peerDependencies) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".peerDependencies",
+-		expected: "(Record<string, string> | undefined)",
+-		value: input.peerDependencies
+-	}, _errorFactory)) && _ao2(input.peerDependencies, _path + ".peerDependencies", _exceptionable) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".peerDependencies",
+-		expected: "(Record<string, string> | undefined)",
+-		value: input.peerDependencies
+-	}, _errorFactory)) && (void 0 === input.optionalDependencies || ("object" === typeof input.optionalDependencies && null !== input.optionalDependencies && false === Array.isArray(input.optionalDependencies) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".optionalDependencies",
+-		expected: "(Record<string, string> | undefined)",
+-		value: input.optionalDependencies
+-	}, _errorFactory)) && _ao2(input.optionalDependencies, _path + ".optionalDependencies", _exceptionable) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".optionalDependencies",
+-		expected: "(Record<string, string> | undefined)",
+-		value: input.optionalDependencies
+-	}, _errorFactory));
+-	const _ao1 = (input, _path, _exceptionable = true) => (void 0 === input.access || "public" === input.access || "restricted" === input.access || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".access",
+-		expected: "(\"public\" | \"restricted\" | undefined)",
+-		value: input.access
+-	}, _errorFactory)) && (void 0 === input.registry || "string" === typeof input.registry || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".registry",
+-		expected: "(string | undefined)",
+-		value: input.registry
+-	}, _errorFactory)) && (void 0 === input.tag || "string" === typeof input.tag || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".tag",
+-		expected: "(string | undefined)",
+-		value: input.tag
+-	}, _errorFactory));
+-	const _ao2 = (input, _path, _exceptionable = true) => false === _exceptionable || Object.keys(input).every((key) => {
+-		const value = input[key];
+-		if (void 0 === value) return true;
+-		return "string" === typeof value || _assertGuard(_exceptionable, {
+-			method: "typia.createAssert",
+-			path: _path + _accessExpressionAsString(key),
+-			expected: "string",
+-			value
+-		}, _errorFactory);
+-	});
+-	const _ao3 = (input, _path, _exceptionable = true) => (void 0 === input.packages || (Array.isArray(input.packages) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".packages",
+-		expected: "(Array<string> | undefined)",
+-		value: input.packages
+-	}, _errorFactory)) && input.packages.every((elem, _index4) => "string" === typeof elem || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".packages[" + _index4 + "]",
+-		expected: "string",
+-		value: elem
+-	}, _errorFactory)) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".packages",
+-		expected: "(Array<string> | undefined)",
+-		value: input.packages
+-	}, _errorFactory)) && (void 0 === input.catalog || ("object" === typeof input.catalog && null !== input.catalog && false === Array.isArray(input.catalog) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".catalog",
+-		expected: "(Record<string, string> | undefined)",
+-		value: input.catalog
+-	}, _errorFactory)) && _ao2(input.catalog, _path + ".catalog", _exceptionable) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".catalog",
+-		expected: "(Record<string, string> | undefined)",
+-		value: input.catalog
+-	}, _errorFactory)) && (void 0 === input.catalogs || ("object" === typeof input.catalogs && null !== input.catalogs && false === Array.isArray(input.catalogs) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".catalogs",
+-		expected: "(Record<string, Record<string, string>> | undefined)",
+-		value: input.catalogs
+-	}, _errorFactory)) && _ao4(input.catalogs, _path + ".catalogs", _exceptionable) || _assertGuard(_exceptionable, {
+-		method: "typia.createAssert",
+-		path: _path + ".catalogs",
+-		expected: "(Record<string, Record<string, string>> | undefined)",
+-		value: input.catalogs
+-	}, _errorFactory));
+-	const _ao4 = (input, _path, _exceptionable = true) => false === _exceptionable || Object.keys(input).every((key) => {
+-		const value = input[key];
+-		if (void 0 === value) return true;
+-		return ("object" === typeof value && null !== value && false === Array.isArray(value) || _assertGuard(_exceptionable, {
+-			method: "typia.createAssert",
+-			path: _path + _accessExpressionAsString(key),
+-			expected: "Record<string, string>",
+-			value
+-		}, _errorFactory)) && _ao2(value, _path + _accessExpressionAsString(key), _exceptionable) || _assertGuard(_exceptionable, {
+-			method: "typia.createAssert",
+-			path: _path + _accessExpressionAsString(key),
+-			expected: "Record<string, string>",
+-			value
+-		}, _errorFactory);
+-	});
+-	const __is = (input) => "object" === typeof input && null !== input && _io0(input);
+-	let _errorFactory;
+-	return (input, errorFactory) => {
+-		if (false === __is(input)) {
+-			_errorFactory = errorFactory;
+-			((input, _path, _exceptionable = true) => ("object" === typeof input && null !== input || _assertGuard(true, {
+-				method: "typia.createAssert",
+-				path: _path + "",
+-				expected: "PackageManifest",
+-				value: input
+-			}, _errorFactory)) && _ao0(input, _path + "", true) || _assertGuard(true, {
+-				method: "typia.createAssert",
+-				path: _path + "",
+-				expected: "PackageManifest",
+-				value: input
+-			}, _errorFactory))(input, "$input", true);
+-		}
+-		return input;
+-	};
+-})();
++  const _io0 = (input) =>
++    typeof input.name === 'string' &&
++    (void 0 === input.version || typeof input.version === 'string') &&
++    (void 0 === input['private'] || typeof input['private'] === 'boolean') &&
++    (void 0 === input.publishConfig ||
++      (typeof input.publishConfig === 'object' &&
++        input.publishConfig !== null &&
++        Array.isArray(input.publishConfig) === false &&
++        _io1(input.publishConfig))) &&
++    (void 0 === input.scripts ||
++      (typeof input.scripts === 'object' &&
++        input.scripts !== null &&
++        Array.isArray(input.scripts) === false &&
++        _io2(input.scripts))) &&
++    input.workspaces !== null &&
++    (void 0 === input.workspaces ||
++      (Array.isArray(input.workspaces) &&
++        input.workspaces.every((elem) => typeof elem === 'string')) ||
++      (typeof input.workspaces === 'object' &&
++        input.workspaces !== null &&
++        Array.isArray(input.workspaces) === false &&
++        _io3(input.workspaces))) &&
++    (void 0 === input.catalog ||
++      (typeof input.catalog === 'object' &&
++        input.catalog !== null &&
++        Array.isArray(input.catalog) === false &&
++        _io2(input.catalog))) &&
++    (void 0 === input.catalogs ||
++      (typeof input.catalogs === 'object' &&
++        input.catalogs !== null &&
++        Array.isArray(input.catalogs) === false &&
++        _io4(input.catalogs))) &&
++    (void 0 === input.dependencies ||
++      (typeof input.dependencies === 'object' &&
++        input.dependencies !== null &&
++        Array.isArray(input.dependencies) === false &&
++        _io2(input.dependencies))) &&
++    (void 0 === input.devDependencies ||
++      (typeof input.devDependencies === 'object' &&
++        input.devDependencies !== null &&
++        Array.isArray(input.devDependencies) === false &&
++        _io2(input.devDependencies))) &&
++    (void 0 === input.peerDependencies ||
++      (typeof input.peerDependencies === 'object' &&
++        input.peerDependencies !== null &&
++        Array.isArray(input.peerDependencies) === false &&
++        _io2(input.peerDependencies))) &&
++    (void 0 === input.optionalDependencies ||
++      (typeof input.optionalDependencies === 'object' &&
++        input.optionalDependencies !== null &&
++        Array.isArray(input.optionalDependencies) === false &&
++        _io2(input.optionalDependencies)))
++  const _io1 = (input) =>
++    (void 0 === input.access ||
++      input.access === 'public' ||
++      input.access === 'restricted') &&
++    (void 0 === input.registry || typeof input.registry === 'string') &&
++    (void 0 === input.tag || typeof input.tag === 'string')
++  const _io2 = (input) =>
++    Object.keys(input).every((key) => {
++      const value = input[key]
++      if (void 0 === value) return true
++      return typeof value === 'string' 
++    })
++  const _io3 = (input) =>
++    (void 0 === input.packages ||
++      (Array.isArray(input.packages) &&
++        input.packages.every((elem) => typeof elem === 'string'))) &&
++    (void 0 === input.catalog ||
++      (typeof input.catalog === 'object' &&
++        input.catalog !== null &&
++        Array.isArray(input.catalog) === false &&
++        _io2(input.catalog))) &&
++    (void 0 === input.catalogs ||
++      (typeof input.catalogs === 'object' &&
++        input.catalogs !== null &&
++        Array.isArray(input.catalogs) === false &&
++        _io4(input.catalogs)))
++  const _io4 = (input) =>
++    Object.keys(input).every((key) => {
++      const value = input[key]
++      if (void 0 === value) return true
++      return (
++        typeof value === 'object' &&
++        value !== null &&
++        Array.isArray(value) === false &&
++        _io2(value)
++      )
++    })
++  const _ao0 = (input, _path, _exceptionable = true) =>
++    (typeof input.name === 'string' ||
++      _assertGuard(
++        _exceptionable,
++        {
++          method: 'typia.createAssert',
++          path: `${_path  }.name`,
++          expected: 'string',
++          value: input.name,
++        },
++        _errorFactory
++      )) &&
++    (void 0 === input.version ||
++      typeof input.version === 'string' ||
++      _assertGuard(
++        _exceptionable,
++        {
++          method: 'typia.createAssert',
++          path: `${_path  }.version`,
++          expected: '(string | undefined)',
++          value: input.version,
++        },
++        _errorFactory
++      )) &&
++    (void 0 === input['private'] ||
++      typeof input['private'] === 'boolean' ||
++      _assertGuard(
++        _exceptionable,
++        {
++          method: 'typia.createAssert',
++          path: `${_path  }["private"]`,
++          expected: '(boolean | undefined)',
++          value: input['private'],
++        },
++        _errorFactory
++      )) &&
++    (void 0 === input.publishConfig ||
++      (((typeof input.publishConfig === 'object' &&
++        input.publishConfig !== null &&
++        Array.isArray(input.publishConfig) === false) ||
++        _assertGuard(
++          _exceptionable,
++          {
++            method: 'typia.createAssert',
++            path: `${_path  }.publishConfig`,
++            expected: '(__type | undefined)',
++            value: input.publishConfig,
++          },
++          _errorFactory
++        )) &&
++        _ao1(input.publishConfig, `${_path  }.publishConfig`, _exceptionable)) ||
++      _assertGuard(
++        _exceptionable,
++        {
++          method: 'typia.createAssert',
++          path: `${_path  }.publishConfig`,
++          expected: '(__type | undefined)',
++          value: input.publishConfig,
++        },
++        _errorFactory
++      )) &&
++    (void 0 === input.scripts ||
++      (((typeof input.scripts === 'object' &&
++        input.scripts !== null &&
++        Array.isArray(input.scripts) === false) ||
++        _assertGuard(
++          _exceptionable,
++          {
++            method: 'typia.createAssert',
++            path: `${_path  }.scripts`,
++            expected: '(Record<string, string> | undefined)',
++            value: input.scripts,
++          },
++          _errorFactory
++        )) &&
++        _ao2(input.scripts, `${_path  }.scripts`, _exceptionable)) ||
++      _assertGuard(
++        _exceptionable,
++        {
++          method: 'typia.createAssert',
++          path: `${_path  }.scripts`,
++          expected: '(Record<string, string> | undefined)',
++          value: input.scripts,
++        },
++        _errorFactory
++      )) &&
++    (input.workspaces !== null ||
++      _assertGuard(
++        _exceptionable,
++        {
++          method: 'typia.createAssert',
++          path: `${_path  }.workspaces`,
++          expected: '(Array<string> | BunWorkspaces | undefined)',
++          value: input.workspaces,
++        },
++        _errorFactory
++      )) &&
++    (void 0 === input.workspaces ||
++      (Array.isArray(input.workspaces) &&
++        input.workspaces.every(
++          (elem, _index3) =>
++            typeof elem === 'string' ||
++            _assertGuard(
++              _exceptionable,
++              {
++                method: 'typia.createAssert',
++                path: `${_path  }.workspaces[${  _index3  }]`,
++                expected: 'string',
++                value: elem,
++              },
++              _errorFactory
++            )
++        )) ||
++      (typeof input.workspaces === 'object' &&
++        input.workspaces !== null &&
++        Array.isArray(input.workspaces) === false &&
++        _ao3(input.workspaces, `${_path  }.workspaces`, _exceptionable)) ||
++      _assertGuard(
++        _exceptionable,
++        {
++          method: 'typia.createAssert',
++          path: `${_path  }.workspaces`,
++          expected: '(Array<string> | BunWorkspaces | undefined)',
++          value: input.workspaces,
++        },
++        _errorFactory
++      ) ||
++      _assertGuard(
++        _exceptionable,
++        {
++          method: 'typia.createAssert',
++          path: `${_path  }.workspaces`,
++          expected: '(Array<string> | BunWorkspaces | undefined)',
++          value: input.workspaces,
++        },
++        _errorFactory
++      )) &&
++    (void 0 === input.catalog ||
++      (((typeof input.catalog === 'object' &&
++        input.catalog !== null &&
++        Array.isArray(input.catalog) === false) ||
++        _assertGuard(
++          _exceptionable,
++          {
++            method: 'typia.createAssert',
++            path: `${_path  }.catalog`,
++            expected: '(Record<string, string> | undefined)',
++            value: input.catalog,
++          },
++          _errorFactory
++        )) &&
++        _ao2(input.catalog, `${_path  }.catalog`, _exceptionable)) ||
++      _assertGuard(
++        _exceptionable,
++        {
++          method: 'typia.createAssert',
++          path: `${_path  }.catalog`,
++          expected: '(Record<string, string> | undefined)',
++          value: input.catalog,
++        },
++        _errorFactory
++      )) &&
++    (void 0 === input.catalogs ||
++      (((typeof input.catalogs === 'object' &&
++        input.catalogs !== null &&
++        Array.isArray(input.catalogs) === false) ||
++        _assertGuard(
++          _exceptionable,
++          {
++            method: 'typia.createAssert',
++            path: `${_path  }.catalogs`,
++            expected: '(Record<string, Record<string, string>> | undefined)',
++            value: input.catalogs,
++          },
++          _errorFactory
++        )) &&
++        _ao4(input.catalogs, `${_path  }.catalogs`, _exceptionable)) ||
++      _assertGuard(
++        _exceptionable,
++        {
++          method: 'typia.createAssert',
++          path: `${_path  }.catalogs`,
++          expected: '(Record<string, Record<string, string>> | undefined)',
++          value: input.catalogs,
++        },
++        _errorFactory
++      )) &&
++    (void 0 === input.dependencies ||
++      (((typeof input.dependencies === 'object' &&
++        input.dependencies !== null &&
++        Array.isArray(input.dependencies) === false) ||
++        _assertGuard(
++          _exceptionable,
++          {
++            method: 'typia.createAssert',
++            path: `${_path  }.dependencies`,
++            expected: '(Record<string, string> | undefined)',
++            value: input.dependencies,
++          },
++          _errorFactory
++        )) &&
++        _ao2(input.dependencies, `${_path  }.dependencies`, _exceptionable)) ||
++      _assertGuard(
++        _exceptionable,
++        {
++          method: 'typia.createAssert',
++          path: `${_path  }.dependencies`,
++          expected: '(Record<string, string> | undefined)',
++          value: input.dependencies,
++        },
++        _errorFactory
++      )) &&
++    (void 0 === input.devDependencies ||
++      (((typeof input.devDependencies === 'object' &&
++        input.devDependencies !== null &&
++        Array.isArray(input.devDependencies) === false) ||
++        _assertGuard(
++          _exceptionable,
++          {
++            method: 'typia.createAssert',
++            path: `${_path  }.devDependencies`,
++            expected: '(Record<string, string> | undefined)',
++            value: input.devDependencies,
++          },
++          _errorFactory
++        )) &&
++        _ao2(
++          input.devDependencies,
++          `${_path  }.devDependencies`,
++          _exceptionable
++        )) ||
++      _assertGuard(
++        _exceptionable,
++        {
++          method: 'typia.createAssert',
++          path: `${_path  }.devDependencies`,
++          expected: '(Record<string, string> | undefined)',
++          value: input.devDependencies,
++        },
++        _errorFactory
++      )) &&
++    (void 0 === input.peerDependencies ||
++      (((typeof input.peerDependencies === 'object' &&
++        input.peerDependencies !== null &&
++        Array.isArray(input.peerDependencies) === false) ||
++        _assertGuard(
++          _exceptionable,
++          {
++            method: 'typia.createAssert',
++            path: `${_path  }.peerDependencies`,
++            expected: '(Record<string, string> | undefined)',
++            value: input.peerDependencies,
++          },
++          _errorFactory
++        )) &&
++        _ao2(
++          input.peerDependencies,
++          `${_path  }.peerDependencies`,
++          _exceptionable
++        )) ||
++      _assertGuard(
++        _exceptionable,
++        {
++          method: 'typia.createAssert',
++          path: `${_path  }.peerDependencies`,
++          expected: '(Record<string, string> | undefined)',
++          value: input.peerDependencies,
++        },
++        _errorFactory
++      )) &&
++    (void 0 === input.optionalDependencies ||
++      (((typeof input.optionalDependencies === 'object' &&
++        input.optionalDependencies !== null &&
++        Array.isArray(input.optionalDependencies) === false) ||
++        _assertGuard(
++          _exceptionable,
++          {
++            method: 'typia.createAssert',
++            path: `${_path  }.optionalDependencies`,
++            expected: '(Record<string, string> | undefined)',
++            value: input.optionalDependencies,
++          },
++          _errorFactory
++        )) &&
++        _ao2(
++          input.optionalDependencies,
++          `${_path  }.optionalDependencies`,
++          _exceptionable
++        )) ||
++      _assertGuard(
++        _exceptionable,
++        {
++          method: 'typia.createAssert',
++          path: `${_path  }.optionalDependencies`,
++          expected: '(Record<string, string> | undefined)',
++          value: input.optionalDependencies,
++        },
++        _errorFactory
++      ))
++  const _ao1 = (input, _path, _exceptionable = true) =>
++    (void 0 === input.access ||
++      input.access === 'public' ||
++      input.access === 'restricted' ||
++      _assertGuard(
++        _exceptionable,
++        {
++          method: 'typia.createAssert',
++          path: `${_path  }.access`,
++          expected: '("public" | "restricted" | undefined)',
++          value: input.access,
++        },
++        _errorFactory
++      )) &&
++    (void 0 === input.registry ||
++      typeof input.registry === 'string' ||
++      _assertGuard(
++        _exceptionable,
++        {
++          method: 'typia.createAssert',
++          path: `${_path  }.registry`,
++          expected: '(string | undefined)',
++          value: input.registry,
++        },
++        _errorFactory
++      )) &&
++    (void 0 === input.tag ||
++      typeof input.tag === 'string' ||
++      _assertGuard(
++        _exceptionable,
++        {
++          method: 'typia.createAssert',
++          path: `${_path  }.tag`,
++          expected: '(string | undefined)',
++          value: input.tag,
++        },
++        _errorFactory
++      ))
++  const _ao2 = (input, _path, _exceptionable = true) =>
++    _exceptionable === false ||
++    Object.keys(input).every((key) => {
++      const value = input[key]
++      if (void 0 === value) return true
++      return (
++        typeof value === 'string' ||
++        _assertGuard(
++          _exceptionable,
++          {
++            method: 'typia.createAssert',
++            path: _path + _accessExpressionAsString(key),
++            expected: 'string',
++            value,
++          },
++          _errorFactory
++        )
++      )
++    })
++  const _ao3 = (input, _path, _exceptionable = true) =>
++    (void 0 === input.packages ||
++      ((Array.isArray(input.packages) ||
++        _assertGuard(
++          _exceptionable,
++          {
++            method: 'typia.createAssert',
++            path: `${_path  }.packages`,
++            expected: '(Array<string> | undefined)',
++            value: input.packages,
++          },
++          _errorFactory
++        )) &&
++        input.packages.every(
++          (elem, _index4) =>
++            typeof elem === 'string' ||
++            _assertGuard(
++              _exceptionable,
++              {
++                method: 'typia.createAssert',
++                path: `${_path  }.packages[${  _index4  }]`,
++                expected: 'string',
++                value: elem,
++              },
++              _errorFactory
++            )
++        )) ||
++      _assertGuard(
++        _exceptionable,
++        {
++          method: 'typia.createAssert',
++          path: `${_path  }.packages`,
++          expected: '(Array<string> | undefined)',
++          value: input.packages,
++        },
++        _errorFactory
++      )) &&
++    (void 0 === input.catalog ||
++      (((typeof input.catalog === 'object' &&
++        input.catalog !== null &&
++        Array.isArray(input.catalog) === false) ||
++        _assertGuard(
++          _exceptionable,
++          {
++            method: 'typia.createAssert',
++            path: `${_path  }.catalog`,
++            expected: '(Record<string, string> | undefined)',
++            value: input.catalog,
++          },
++          _errorFactory
++        )) &&
++        _ao2(input.catalog, `${_path  }.catalog`, _exceptionable)) ||
++      _assertGuard(
++        _exceptionable,
++        {
++          method: 'typia.createAssert',
++          path: `${_path  }.catalog`,
++          expected: '(Record<string, string> | undefined)',
++          value: input.catalog,
++        },
++        _errorFactory
++      )) &&
++    (void 0 === input.catalogs ||
++      (((typeof input.catalogs === 'object' &&
++        input.catalogs !== null &&
++        Array.isArray(input.catalogs) === false) ||
++        _assertGuard(
++          _exceptionable,
++          {
++            method: 'typia.createAssert',
++            path: `${_path  }.catalogs`,
++            expected: '(Record<string, Record<string, string>> | undefined)',
++            value: input.catalogs,
++          },
++          _errorFactory
++        )) &&
++        _ao4(input.catalogs, `${_path  }.catalogs`, _exceptionable)) ||
++      _assertGuard(
++        _exceptionable,
++        {
++          method: 'typia.createAssert',
++          path: `${_path  }.catalogs`,
++          expected: '(Record<string, Record<string, string>> | undefined)',
++          value: input.catalogs,
++        },
++        _errorFactory
++      ))
++  const _ao4 = (input, _path, _exceptionable = true) =>
++    _exceptionable === false ||
++    Object.keys(input).every((key) => {
++      const value = input[key]
++      if (void 0 === value) return true
++      return (
++        (((typeof value === 'object' &&
++          value !== null &&
++          Array.isArray(value) === false) ||
++          _assertGuard(
++            _exceptionable,
++            {
++              method: 'typia.createAssert',
++              path: _path + _accessExpressionAsString(key),
++              expected: 'Record<string, string>',
++              value,
++            },
++            _errorFactory
++          )) &&
++          _ao2(
++            value,
++            _path + _accessExpressionAsString(key),
++            _exceptionable
++          )) ||
++        _assertGuard(
++          _exceptionable,
++          {
++            method: 'typia.createAssert',
++            path: _path + _accessExpressionAsString(key),
++            expected: 'Record<string, string>',
++            value,
++          },
++          _errorFactory
++        )
++      )
++    })
++  const __is = (input) =>
++    typeof input === 'object' && input !== null && _io0(input)
++  let _errorFactory
++  return (input, errorFactory) => {
++    if (__is(input) === false) {
++      _errorFactory = errorFactory
++      ;((input, _path, _exceptionable = true) =>
++        (((typeof input === 'object' && input !== null) ||
++          _assertGuard(
++            true,
++            {
++              method: 'typia.createAssert',
++              path: `${_path  }`,
++              expected: 'PackageManifest',
++              value: input,
++            },
++            _errorFactory
++          )) &&
++          _ao0(input, `${_path  }`, true)) ||
++        _assertGuard(
++          true,
++          {
++            method: 'typia.createAssert',
++            path: `${_path  }`,
++            expected: 'PackageManifest',
++            value: input,
++          },
++          _errorFactory
++        ))(input, '$input', true)
++    }
++    return input
++  }
++})()
+ const DEP_FIELDS = [
+-	"dependencies",
+-	"devDependencies",
+-	"peerDependencies",
+-	"optionalDependencies"
+-];
++  'dependencies',
++  'devDependencies',
++  'peerDependencies',
++  'optionalDependencies',
++]
+ function listDependencies(graph, pkg) {
+-	const out = [];
+-	for (const field of DEP_FIELDS) {
+-		const table = pkg.manifest[field];
+-		if (!table) continue;
+-		for (const [name, raw] of Object.entries(table)) out.push(resolveDependency(graph, pkg, field, name, raw, (range) => {
+-			table[name] = range;
+-		}));
+-	}
+-	return out;
++  const out = []
++  for (const field of DEP_FIELDS) {
++    const table = pkg.manifest[field]
++    if (!table) continue
++    for (const [name, raw] of Object.entries(table))
++      out.push(
++        resolveDependency(graph, pkg, field, name, raw, (range) => {
++          table[name] = range
++        })
++      )
++  }
++  return out
+ }
+ function parseDependencySpec(raw) {
+-	if (raw.startsWith("workspace:")) {
+-		const body = raw.slice(10);
+-		if (!body) return {
+-			protocol: "workspace",
+-			range: "*"
+-		};
+-		if (body.startsWith(".") || body.startsWith("/")) return {
+-			protocol: "workspace",
+-			range: body,
+-			path: body
+-		};
+-		const separator = body.lastIndexOf("@");
+-		if (separator > 0) return {
+-			protocol: "workspace",
+-			packageName: body.slice(0, separator),
+-			range: body.slice(separator + 1) || "*"
+-		};
+-		if (separator === 0) return {
+-			protocol: "workspace",
+-			packageName: body,
+-			range: "*"
+-		};
+-		return {
+-			protocol: "workspace",
+-			range: body
+-		};
+-	}
+-	if (raw.startsWith("file:")) return {
+-		protocol: "file",
+-		path: raw.slice(5)
+-	};
+-	if (raw.startsWith("portal:")) return {
+-		protocol: "portal",
+-		path: raw.slice(7)
+-	};
+-	if (raw === "catalog:") return {
+-		protocol: "catalog",
+-		catalogName: "default"
+-	};
+-	if (raw.startsWith("catalog:")) return {
+-		protocol: "catalog",
+-		catalogName: raw.slice(8).trim() || "default"
+-	};
+-	if (raw.startsWith("npm:")) {
+-		const spec = raw.slice(4);
+-		const separator = spec.lastIndexOf("@");
+-		if (separator > 0) return {
+-			protocol: "npm",
+-			alias: spec.slice(0, separator),
+-			range: spec.slice(separator + 1)
+-		};
+-	}
+-	return { range: raw };
++  if (raw.startsWith('workspace:')) {
++    const body = raw.slice(10)
++    if (!body)
++      return {
++        protocol: 'workspace',
++        range: '*',
++      }
++    if (body.startsWith('.') || body.startsWith('/'))
++      return {
++        protocol: 'workspace',
++        range: body,
++        path: body,
++      }
++    const separator = body.lastIndexOf('@')
++    if (separator > 0)
++      return {
++        protocol: 'workspace',
++        packageName: body.slice(0, separator),
++        range: body.slice(separator + 1) || '*',
++      }
++    if (separator === 0)
++      return {
++        protocol: 'workspace',
++        packageName: body,
++        range: '*',
++      }
++    return {
++      protocol: 'workspace',
++      range: body,
++    }
++  }
++  if (raw.startsWith('file:'))
++    return {
++      protocol: 'file',
++      path: raw.slice(5),
++    }
++  if (raw.startsWith('portal:'))
++    return {
++      protocol: 'portal',
++      path: raw.slice(7),
++    }
++  if (raw === 'catalog:')
++    return {
++      protocol: 'catalog',
++      catalogName: 'default',
++    }
++  if (raw.startsWith('catalog:'))
++    return {
++      protocol: 'catalog',
++      catalogName: raw.slice(8).trim() || 'default',
++    }
++  if (raw.startsWith('npm:')) {
++    const spec = raw.slice(4)
++    const separator = spec.lastIndexOf('@')
++    if (separator > 0)
++      return {
++        protocol: 'npm',
++        alias: spec.slice(0, separator),
++        range: spec.slice(separator + 1),
++      }
++  }
++  return { range: raw }
+ }
+ function formatDependencySpec(spec, range) {
+-	switch (spec.protocol) {
+-		case "workspace":
+-			if (spec.path) return `workspace:${spec.path}`;
+-			if (spec.packageName) {
+-				const next = range ?? spec.range;
+-				return `workspace:${spec.packageName}@${next}`;
+-			}
+-			return `workspace:${range ?? spec.range}`;
+-		case "file": return `file:${spec.path}`;
+-		case "portal": return `portal:${spec.path}`;
+-		case "catalog": return spec.catalogName === "default" ? "catalog:" : `catalog:${spec.catalogName}`;
+-		case "npm": return `npm:${spec.alias}@${range ?? spec.range}`;
+-		default: return range ?? spec.range;
+-	}
++  switch (spec.protocol) {
++    case 'workspace': {
++      if (spec.path) return `workspace:${spec.path}`
++      if (spec.packageName) {
++        const next = range ?? spec.range
++        return `workspace:${spec.packageName}@${next}`
++      }
++      return `workspace:${range ?? spec.range}`
++    }
++    case 'file': {
++      return `file:${spec.path}`
++    }
++    case 'portal': {
++      return `portal:${spec.path}`
++    }
++    case 'catalog': {
++      return spec.catalogName === 'default'
++        ? 'catalog:'
++        : `catalog:${spec.catalogName}`
++    }
++    case 'npm': {
++      return `npm:${spec.alias}@${range ?? spec.range}`
++    }
++    default: {
++      return range ?? spec.range
++    }
++  }
+ }
+ async function resolveNpmGraph(cwd, client) {
+-	const packages = /* @__PURE__ */ new Map();
+-	const packagesByPath = /* @__PURE__ */ new Map();
+-	const catalogSources = [];
+-	function addPackage(packagePath, manifest) {
+-		const pkg = new NpmPackage(packagePath, manifest);
+-		packages.set(pkg.name, pkg);
+-		packagesByPath.set(packagePath, pkg);
+-	}
+-	const patterns = [];
+-	const rootManifest = await readManifest(cwd).catch(() => void 0);
+-	if (rootManifest) {
+-		catalogSources.push(createRootCatalogSource(rootManifest));
+-		if (rootManifest.name) addPackage(cwd, rootManifest);
+-		if (Array.isArray(rootManifest.workspaces)) patterns.push(...rootManifest.workspaces);
+-		else if (rootManifest.workspaces?.packages) patterns.push(...rootManifest.workspaces.packages);
+-	}
+-	let workspaceFiles;
+-	switch (client) {
+-		case "pnpm":
+-			workspaceFiles = ["pnpm-workspace.yaml"];
+-			break;
+-		case "nub":
+-			workspaceFiles = ["pnpm-workspace.yaml"];
+-			break;
+-		case "aube":
+-			workspaceFiles = ["pnpm-workspace.yaml", "aube-workspace.yaml"];
+-			break;
+-		case "yarn":
+-			const yarnCatalog = await readYarnCatalog(cwd);
+-			if (yarnCatalog) catalogSources.push(yarnCatalog);
+-			break;
+-	}
+-	if (workspaceFiles) await Promise.all(workspaceFiles.map(async (name) => {
+-		const filePath = path.join(cwd, name);
+-		const content = await readFile(filePath, "utf8").catch((error) => {
+-			if (isNodeError(error) && error.code === "ENOENT") return void 0;
+-			throw error;
+-		});
+-		if (!content) return;
+-		const doc = parseDocument(content);
+-		const packages = doc.get("packages");
+-		catalogSources.push(createWorkspaceCatalogSource(filePath, doc));
+-		if (isSeq(packages)) {
+-			for (const pkg of packages.toJSON()) if (typeof pkg === "string") patterns.push(pkg);
+-		}
+-	}));
+-	if (patterns?.length) {
+-		const candidatePaths = await expandWorkspacePatterns(cwd, patterns);
+-		await Promise.all(candidatePaths.map(async (packagePath) => {
+-			const manifest = await readManifest(packagePath).catch(() => void 0);
+-			if (!manifest) return;
+-			addPackage(packagePath, manifest);
+-		}));
+-	}
+-	return {
+-		root: cwd,
+-		packages,
+-		packagesByPath,
+-		catalogs: catalogSources
+-	};
++  const packages = /* @__PURE__ */ new Map()
++  const packagesByPath = /* @__PURE__ */ new Map()
++  const catalogSources = []
++  function addPackage(packagePath, manifest) {
++    const pkg = new NpmPackage(packagePath, manifest)
++    packages.set(pkg.name, pkg)
++    packagesByPath.set(packagePath, pkg)
++  }
++  const patterns = []
++  const rootManifest = await readManifest(cwd).catch(() => void 0)
++  if (rootManifest) {
++    catalogSources.push(createRootCatalogSource(rootManifest))
++    if (rootManifest.name) addPackage(cwd, rootManifest)
++    if (Array.isArray(rootManifest.workspaces))
++      patterns.push(...rootManifest.workspaces)
++    else if (rootManifest.workspaces?.packages)
++      patterns.push(...rootManifest.workspaces.packages)
++  }
++  let workspaceFiles
++  switch (client) {
++    case 'pnpm': {
++      workspaceFiles = ['pnpm-workspace.yaml']
++      break
++    }
++    case 'nub': {
++      workspaceFiles = ['pnpm-workspace.yaml']
++      break
++    }
++    case 'aube': {
++      workspaceFiles = ['pnpm-workspace.yaml', 'aube-workspace.yaml']
++      break
++    }
++    case 'yarn': {
++      const yarnCatalog = await readYarnCatalog(cwd)
++      if (yarnCatalog) catalogSources.push(yarnCatalog)
++      break
++    }
++  }
++  if (workspaceFiles)
++    await Promise.all(
++      workspaceFiles.map(async (name) => {
++        const filePath = path.join(cwd, name)
++        const content = await readFile(filePath, 'utf8').catch((error) => {
++          if (isNodeError(error) && error.code === 'ENOENT') return void 0
++          throw error
++        })
++        if (!content) return
++        const doc = parseDocument(content)
++        const packages = doc.get('packages')
++        catalogSources.push(createWorkspaceCatalogSource(filePath, doc))
++        if (isSeq(packages)) {
++          for (const pkg of packages.toJSON())
++            if (typeof pkg === 'string') patterns.push(pkg)
++        }
++      })
++    )
++  if (patterns?.length) {
++    const candidatePaths = await expandWorkspacePatterns(cwd, patterns)
++    await Promise.all(
++      candidatePaths.map(async (packagePath) => {
++        const manifest = await readManifest(packagePath).catch(() => void 0)
++        if (!manifest) return
++        addPackage(packagePath, manifest)
++      })
++    )
++  }
++  return {
++    root: cwd,
++    packages,
++    packagesByPath,
++    catalogs: catalogSources,
++  }
+ }
+ function resolveDependency(graph, dependent, field, name, raw, write) {
+-	const spec = parseDependencySpec(raw);
+-	const linked = resolveLinkedPackage(graph, dependent, name, spec);
+-	let range;
+-	let customSetRange;
+-	switch (spec.protocol) {
+-		case "catalog":
+-			for (const source of graph.catalogs) {
+-				const resolved = source.resolve(name, spec.catalogName);
+-				if (!resolved) continue;
+-				range = resolved;
+-				customSetRange = (v) => source.setRange(name, spec.catalogName, v);
+-				break;
+-			}
+-			break;
+-		case "workspace":
+-			range = semver$1.validRange(spec.range) ? spec.range : void 0;
+-			break;
+-		case "npm":
+-		case void 0:
+-			range = spec.range;
+-			break;
+-	}
+-	return {
+-		field,
+-		name,
+-		spec,
+-		linked,
+-		range,
+-		setRange(nextRange) {
+-			if (customSetRange) {
+-				customSetRange(nextRange);
+-				return;
+-			}
+-			write(formatDependencySpec(spec, nextRange));
+-		}
+-	};
++  const spec = parseDependencySpec(raw)
++  const linked = resolveLinkedPackage(graph, dependent, name, spec)
++  let range
++  let customSetRange
++  switch (spec.protocol) {
++    case 'catalog': {
++      for (const source of graph.catalogs) {
++        const resolved = source.resolve(name, spec.catalogName)
++        if (!resolved) continue
++        range = resolved
++        customSetRange = (v) => source.setRange(name, spec.catalogName, v)
++        break
++      }
++      break
++    }
++    case 'workspace': {
++      range = semver$1.validRange(spec.range) ? spec.range : void 0
++      break
++    }
++    case 'npm':
++    case void 0: {
++      range = spec.range
++      break
++    }
++  }
++  return {
++    field,
++    name,
++    spec,
++    linked,
++    range,
++    setRange(nextRange) {
++      if (customSetRange) {
++        customSetRange(nextRange)
++        return
++      }
++      write(formatDependencySpec(spec, nextRange))
++    },
++  }
+ }
+ function resolveLinkedPackage(graph, dependent, name, spec) {
+-	switch (spec.protocol) {
+-		case "workspace":
+-			if (spec.path) return findPackageByPath(graph, dependent.path, spec.path);
+-			return graph.packages.get(spec.packageName || name);
+-		case "file":
+-		case "portal": return findPackageByPath(graph, dependent.path, spec.path);
+-		case "npm": return graph.packages.get(spec.alias);
+-		default: return graph.packages.get(name);
+-	}
++  switch (spec.protocol) {
++    case 'workspace': {
++      if (spec.path) return findPackageByPath(graph, dependent.path, spec.path)
++      return graph.packages.get(spec.packageName || name)
++    }
++    case 'file':
++    case 'portal': {
++      return findPackageByPath(graph, dependent.path, spec.path)
++    }
++    case 'npm': {
++      return graph.packages.get(spec.alias)
++    }
++    default: {
++      return graph.packages.get(name)
++    }
++  }
+ }
+ function findPackageByPath(graph, from, target) {
+-	let absolute = path.resolve(from, target);
+-	if (path.basename(absolute) === "package.json") absolute = path.dirname(absolute);
+-	return graph.packagesByPath.get(absolute);
++  let absolute = path.resolve(from, target)
++  if (path.basename(absolute) === 'package.json')
++    absolute = path.dirname(absolute)
++  return graph.packagesByPath.get(absolute)
+ }
+ async function expandWorkspacePatterns(cwd, patterns) {
+-	if (patterns.length === 0) return [];
+-	return (await glob(patterns, {
+-		absolute: true,
+-		cwd,
+-		ignore: ["**/node_modules/**", "**/dist/**"],
+-		onlyDirectories: true,
+-		onlyFiles: false
+-	})).map((item) => item.endsWith(path.sep) ? item.slice(0, -1) : item);
++  if (patterns.length === 0) return []
++  return (
++    await glob(patterns, {
++      absolute: true,
++      cwd,
++      ignore: ['**/node_modules/**', '**/dist/**'],
++      onlyDirectories: true,
++      onlyFiles: false,
++    })
++  ).map((item) => (item.endsWith(path.sep) ? item.slice(0, -1) : item))
+ }
+ async function readManifest(packagePath) {
+-	const content = await readFile(path.join(packagePath, "package.json"), "utf8");
+-	const parsed = JSON.parse(content);
+-	assertPackageManifest(parsed);
+-	return parsed;
++  const content = await readFile(path.join(packagePath, 'package.json'), 'utf8')
++  const parsed = JSON.parse(content)
++  assertPackageManifest(parsed)
++  return parsed
+ }
+ function createWorkspaceCatalogSource(filePath, doc) {
+-	return {
+-		resolve(name, catalogName) {
+-			const value = doc.getIn(catalogName === "default" ? ["catalog", name] : [
+-				"catalogs",
+-				catalogName,
+-				name
+-			]);
+-			return typeof value === "string" ? value : void 0;
+-		},
+-		setRange(name, catalogName, range) {
+-			doc.setIn(catalogName === "default" ? ["catalog", name] : [
+-				"catalogs",
+-				catalogName,
+-				name
+-			], range);
+-		},
+-		async write() {
+-			const output = doc.toString();
+-			await writeFile(filePath, output.endsWith("\n") ? output : `${output}\n`);
+-		}
+-	};
++  return {
++    resolve(name, catalogName) {
++      const value = doc.getIn(
++        catalogName === 'default'
++          ? ['catalog', name]
++          : ['catalogs', catalogName, name]
++      )
++      return typeof value === 'string' ? value : void 0
++    },
++    setRange(name, catalogName, range) {
++      doc.setIn(
++        catalogName === 'default'
++          ? ['catalog', name]
++          : ['catalogs', catalogName, name],
++        range
++      )
++    },
++    async write() {
++      const output = doc.toString()
++      await writeFile(filePath, output.endsWith('\n') ? output : `${output}\n`)
++    },
++  }
+ }
+ function createRootCatalogSource(manifest) {
+-	return {
+-		resolve(name, catalogName) {
+-			const fromWorkspaces = typeof manifest.workspaces === "object" && !Array.isArray(manifest.workspaces) ? catalogName === "default" ? manifest.workspaces.catalog?.[name] : manifest.workspaces.catalogs?.[catalogName]?.[name] : void 0;
+-			if (fromWorkspaces) return fromWorkspaces;
+-			if (catalogName === "default") return manifest.catalog?.[name];
+-			return manifest.catalogs?.[catalogName]?.[name];
+-		},
+-		setRange(name, catalogName, range) {
+-			if (typeof manifest.workspaces === "object" && !Array.isArray(manifest.workspaces)) if (catalogName === "default") {
+-				manifest.workspaces.catalog ??= {};
+-				manifest.workspaces.catalog[name] = range;
+-			} else {
+-				manifest.workspaces.catalogs ??= {};
+-				manifest.workspaces.catalogs[catalogName] ??= {};
+-				manifest.workspaces.catalogs[catalogName][name] = range;
+-			}
+-			else if (catalogName === "default") {
+-				manifest.catalog ??= {};
+-				manifest.catalog[name] = range;
+-			} else {
+-				manifest.catalogs ??= {};
+-				manifest.catalogs[catalogName] ??= {};
+-				manifest.catalogs[catalogName][name] = range;
+-			}
+-		}
+-	};
++  return {
++    resolve(name, catalogName) {
++      const fromWorkspaces =
++        typeof manifest.workspaces === 'object' &&
++        !Array.isArray(manifest.workspaces)
++          ? (catalogName === 'default'
++            ? manifest.workspaces.catalog?.[name]
++            : manifest.workspaces.catalogs?.[catalogName]?.[name])
++          : void 0
++      if (fromWorkspaces) return fromWorkspaces
++      if (catalogName === 'default') return manifest.catalog?.[name]
++      return manifest.catalogs?.[catalogName]?.[name]
++    },
++    setRange(name, catalogName, range) {
++      if (
++        typeof manifest.workspaces === 'object' &&
++        !Array.isArray(manifest.workspaces)
++      )
++        if (catalogName === 'default') {
++          manifest.workspaces.catalog ??= {}
++          manifest.workspaces.catalog[name] = range
++        } else {
++          manifest.workspaces.catalogs ??= {}
++          manifest.workspaces.catalogs[catalogName] ??= {}
++          manifest.workspaces.catalogs[catalogName][name] = range
++        }
++      else if (catalogName === 'default') {
++        manifest.catalog ??= {}
++        manifest.catalog[name] = range
++      } else {
++        manifest.catalogs ??= {}
++        manifest.catalogs[catalogName] ??= {}
++        manifest.catalogs[catalogName][name] = range
++      }
++    },
++  }
+ }
+ async function readYarnCatalog(cwd) {
+-	const filePath = path.join(cwd, ".yarnrc.yml");
+-	const content = await readFile(filePath, "utf8").catch(() => void 0);
+-	if (!content) return;
+-	const doc = parseDocument(content);
+-	return {
+-		resolve(name, catalogName) {
+-			const value = doc.getIn(catalogName === "default" ? ["catalog", name] : [
+-				"catalogs",
+-				catalogName,
+-				name
+-			]);
+-			return typeof value === "string" ? value : void 0;
+-		},
+-		setRange(name, catalogName, range) {
+-			doc.setIn(catalogName === "default" ? ["catalog", name] : [
+-				"catalogs",
+-				catalogName,
+-				name
+-			], range);
+-		},
+-		async write() {
+-			const output = doc.toString();
+-			await writeFile(filePath, output.endsWith("\n") ? output : `${output}\n`);
+-		}
+-	};
++  const filePath = path.join(cwd, '.yarnrc.yml')
++  const content = await readFile(filePath, 'utf8').catch(() => void 0)
++  if (!content) return
++  const doc = parseDocument(content)
++  return {
++    resolve(name, catalogName) {
++      const value = doc.getIn(
++        catalogName === 'default'
++          ? ['catalog', name]
++          : ['catalogs', catalogName, name]
++      )
++      return typeof value === 'string' ? value : void 0
++    },
++    setRange(name, catalogName, range) {
++      doc.setIn(
++        catalogName === 'default'
++          ? ['catalog', name]
++          : ['catalogs', catalogName, name],
++        range
++      )
++    },
++    async write() {
++      const output = doc.toString()
++      await writeFile(filePath, output.endsWith('\n') ? output : `${output}\n`)
++    },
++  }
+ }
+ //#endregion
+ //#region src/providers/npm.ts
+ const validateNpmPackageLock = (() => {
+-	const _io0 = (input) => "string" === typeof input.id && (void 0 === input.distTag || "string" === typeof input.distTag);
+-	const _vo0 = (input, _path, _exceptionable = true) => ["string" === typeof input.id || _report(_exceptionable, {
+-		path: _path + ".id",
+-		expected: "string",
+-		value: input.id
+-	}), void 0 === input.distTag || "string" === typeof input.distTag || _report(_exceptionable, {
+-		path: _path + ".distTag",
+-		expected: "(string | undefined)",
+-		value: input.distTag
+-	})].every((flag) => flag);
+-	const __is = (input) => "object" === typeof input && null !== input && _io0(input);
+-	let errors;
+-	let _report;
+-	return _createStandardSchema((input) => {
+-		if (false === __is(input)) {
+-			errors = [];
+-			_report = _validateReport(errors);
+-			((input, _path, _exceptionable = true) => ("object" === typeof input && null !== input || _report(true, {
+-				path: _path + "",
+-				expected: "NpmPackageLock",
+-				value: input
+-			})) && _vo0(input, _path + "", true) || _report(true, {
+-				path: _path + "",
+-				expected: "NpmPackageLock",
+-				value: input
+-			}))(input, "$input", true);
+-			const success = 0 === errors.length;
+-			return success ? {
+-				success,
+-				data: input
+-			} : {
+-				success,
+-				errors,
+-				data: input
+-			};
+-		}
+-		return {
+-			success: true,
+-			data: input
+-		};
+-	});
+-})();
++  const _io0 = (input) =>
++    typeof input.id === 'string' &&
++    (void 0 === input.distTag || typeof input.distTag === 'string')
++  const _vo0 = (input, _path, _exceptionable = true) =>
++    [
++      typeof input.id === 'string' ||
++        _report(_exceptionable, {
++          path: `${_path  }.id`,
++          expected: 'string',
++          value: input.id,
++        }),
++      void 0 === input.distTag ||
++        typeof input.distTag === 'string' ||
++        _report(_exceptionable, {
++          path: `${_path  }.distTag`,
++          expected: '(string | undefined)',
++          value: input.distTag,
++        }),
++    ].every((flag) => flag)
++  const __is = (input) =>
++    typeof input === 'object' && input !== null && _io0(input)
++  let errors
++  let _report
++  return _createStandardSchema((input) => {
++    if (__is(input) === false) {
++      errors = []
++      _report = _validateReport(errors)
++      ;((input, _path, _exceptionable = true) =>
++        (((typeof input === 'object' && input !== null) ||
++          _report(true, {
++            path: `${_path  }`,
++            expected: 'NpmPackageLock',
++            value: input,
++          })) &&
++          _vo0(input, `${_path  }`, true)) ||
++        _report(true, {
++          path: `${_path  }`,
++          expected: 'NpmPackageLock',
++          value: input,
++        }))(input, '$input', true)
++      const success = errors.length === 0 
++      return success
++        ? {
++            success,
++            data: input,
++          }
++        : {
++            success,
++            errors,
++            data: input,
++          }
++    }
++    return {
++      success: true,
++      data: input,
++    }
++  })
++})()
+ const validateNpmMarkLatestLock = (() => {
+-	const _io0 = (input) => "string" === typeof input.id;
+-	const _vo0 = (input, _path, _exceptionable = true) => ["string" === typeof input.id || _report(_exceptionable, {
+-		path: _path + ".id",
+-		expected: "string",
+-		value: input.id
+-	})].every((flag) => flag);
+-	const __is = (input) => "object" === typeof input && null !== input && _io0(input);
+-	let errors;
+-	let _report;
+-	return _createStandardSchema((input) => {
+-		if (false === __is(input)) {
+-			errors = [];
+-			_report = _validateReport(errors);
+-			((input, _path, _exceptionable = true) => ("object" === typeof input && null !== input || _report(true, {
+-				path: _path + "",
+-				expected: "NpmMarkLatestLock",
+-				value: input
+-			})) && _vo0(input, _path + "", true) || _report(true, {
+-				path: _path + "",
+-				expected: "NpmMarkLatestLock",
+-				value: input
+-			}))(input, "$input", true);
+-			const success = 0 === errors.length;
+-			return success ? {
+-				success,
+-				data: input
+-			} : {
+-				success,
+-				errors,
+-				data: input
+-			};
+-		}
+-		return {
+-			success: true,
+-			data: input
+-		};
+-	});
+-})();
+-function npm({ client: defaultClient, onBreakPeerDep = "set", updateLockFile = true, trustedPublish, bumpDep: getBumpDepType = ({ kind }) => {
+-	switch (kind) {
+-		case "dependencies":
+-		case "optionalDependencies": return "patch";
+-		case "devDependencies": return false;
+-		case "peerDependencies":
+-			if (onBreakPeerDep === "ignore") return false;
+-			return "major";
+-	}
+-} } = {}) {
+-	return {
+-		name: "npm",
+-		async init() {
+-			if (defaultClient) this.npm = {
+-				client: defaultClient,
+-				agent: defaultClient
+-			};
+-			else {
+-				const result = await detect({ cwd: this.cwd });
+-				this.npm = {
+-					client: result?.name ?? "npm",
+-					agent: result?.agent ?? "npm"
+-				};
+-			}
+-		},
+-		async resolve() {
+-			if (!this.npm) return;
+-			const graph = await resolveNpmGraph(this.cwd, this.npm.client);
+-			if (graph.packages.size === 0) return;
+-			this.npm.graph = graph;
+-			for (const pkg of graph.packages.values()) this.graph.add(pkg);
+-		},
+-		async publishPreflight({ pkg }) {
+-			if (!(pkg instanceof NpmPackage) || !this.npm?.graph) return;
+-			const optionalWait = [];
+-			for (const { linked } of pkg.listDependencies(this.npm.graph)) if (linked) optionalWait.push(linked.id);
+-			return {
+-				shouldPublish: pkg.version !== void 0 && pkg.manifest.private !== true,
+-				optionalWait: optionalWait.length > 0 ? optionalWait : void 0
+-			};
+-		},
+-		resolvePlanStatus({ plan }) {
+-			if (!this.npm?.graph) return;
+-			return Array.from(plan.packages, async ([id, { preflight }]) => {
+-				if (!preflight.shouldPublish) return;
+-				const pkg = this.graph.get(id);
+-				if (!(pkg instanceof NpmPackage) || !pkg.version) return;
+-				if (!await isPackagePublished(pkg.name, pkg.version, pkg.getRegistry())) return "pending";
+-			});
+-		},
+-		initPublishLock({ lock, draft }) {
+-			for (const [id, pkg] of draft.getPackageDrafts()) {
+-				if (!pkg.npm) continue;
+-				lock.write("npm:packages", {
+-					id,
+-					distTag: pkg.npm.distTag
+-				});
+-			}
+-		},
+-		initPublishPlan({ lock, plan }) {
+-			let data;
+-			while (data = lock.read("npm:packages")) {
+-				const validated = validateNpmPackageLock(data);
+-				if (!validated.success) continue;
+-				const parsed = validated.data;
+-				const packagePlan = plan.packages.get(parsed.id);
+-				if (!packagePlan) continue;
+-				packagePlan.npm = { distTag: parsed.distTag };
+-			}
+-			while (data = lock.read("npm:mark-latest")) {
+-				const validated = validateNpmMarkLatestLock(data);
+-				if (!validated.success) continue;
+-				const parsed = validated.data;
+-				const packagePlan = plan.packages.get(parsed.id);
+-				if (!packagePlan) continue;
+-				packagePlan.npm ??= {};
+-				packagePlan.npm.markLatest = true;
+-			}
+-		},
+-		async publish({ pkg, plan }) {
+-			if (!(pkg instanceof NpmPackage) || !this.npm) return;
+-			const { distTag, markLatest } = plan.packages.get(pkg.id)?.npm ?? {};
+-			const result = await publish(this.npm.client, pkg, distTag);
+-			if (result.type === "published" && markLatest) {
+-				const tagResult = await x("npm", [
+-					"dist-tag",
+-					"add",
+-					`${pkg.name}@${pkg.version}`,
+-					"latest",
+-					"--registry",
+-					pkg.getRegistry()
+-				], { nodeOptions: { cwd: pkg.path } });
+-				if (tagResult.exitCode !== 0) return {
+-					type: "failed",
+-					error: execFailure("Failed to mark package as latest", tagResult).message
+-				};
+-			}
+-			return result;
+-		},
+-		initDraft(plan) {
+-			if (!this.npm?.graph) return;
+-			plan.addPolicy(depsPolicy(this, getBumpDepType));
+-		},
+-		async applyDraft(draft) {
+-			if (!this.npm?.graph) return;
+-			const npmGraph = this.npm.graph;
+-			const writes = [];
+-			for (const pkg of npmGraph.packages.values()) {
+-				const bumped = draft.getPackageDraft(pkg.id)?.bumpVersion(pkg);
+-				if (bumped) pkg.manifest.version = bumped;
+-			}
+-			for (const pkg of npmGraph.packages.values()) {
+-				for (const dep of pkg.listDependencies(npmGraph)) {
+-					if (!dep.linked?.version || !dep.range || !dep.setRange) continue;
+-					if (semver$1.satisfies(dep.linked.version, dep.range, { includePrerelease: dep.spec.protocol === "workspace" })) continue;
+-					const isPeer = dep.field === "peerDependencies";
+-					if (isPeer && onBreakPeerDep === "ignore") continue;
+-					let updatedRange;
+-					if (isPeer && onBreakPeerDep === "set") updatedRange = dep.linked.version;
+-					else if (isPeer && onBreakPeerDep === "error") throw new Error(`[Tegami] the version of "${dep.linked.name}" is beyond its peer dependency constraint "${formatDependencySpec(dep.spec)}" in package "${pkg.name}", please update the constraint to satisfy.`);
+-					else if (dep.range.startsWith("^")) updatedRange = `^${dep.linked.version}`;
+-					else if (dep.range.startsWith("~")) updatedRange = `~${dep.linked.version}`;
+-					else updatedRange = dep.linked.version;
+-					dep.setRange(updatedRange);
+-				}
+-				writes.push(pkg.write());
+-			}
+-			for (const source of npmGraph.catalogs) writes.push(source.write?.());
+-			await Promise.all(writes);
+-		},
+-		async applyCliDraft() {
+-			if (!this.npm?.graph || !updateLockFile) return;
+-			let args;
+-			switch (this.npm.agent) {
+-				case "pnpm":
+-				case "pnpm@6":
+-				case "aube":
+-				case "nub":
+-					args = [
+-						"install",
+-						"--lockfile-only",
+-						"--no-frozen-lockfile"
+-					];
+-					break;
+-				case "npm":
+-					args = ["install", "--package-lock-only"];
+-					break;
+-				case "bun":
+-					args = ["install", "--lockfile-only"];
+-					break;
+-				case "yarn@berry":
+-					args = [
+-						"install",
+-						"--mode=update-lockfile",
+-						"--no-immutable"
+-					];
+-					break;
+-				default: args = ["install"];
+-			}
+-			const result = await x(this.npm.client, args, { nodeOptions: { cwd: this.cwd } });
+-			if (result.exitCode !== 0) throw execFailure("Failed to update lockfile.", result);
+-		},
+-		initCli(cli) {
+-			if (!trustedPublish) return;
+-			registerNpmCli(cli, trustedPublish);
+-		}
+-	};
++  const _io0 = (input) => typeof input.id === 'string' 
++  const _vo0 = (input, _path, _exceptionable = true) =>
++    [
++      typeof input.id === 'string' ||
++        _report(_exceptionable, {
++          path: `${_path  }.id`,
++          expected: 'string',
++          value: input.id,
++        }),
++    ].every((flag) => flag)
++  const __is = (input) =>
++    typeof input === 'object' && input !== null && _io0(input)
++  let errors
++  let _report
++  return _createStandardSchema((input) => {
++    if (__is(input) === false) {
++      errors = []
++      _report = _validateReport(errors)
++      ;((input, _path, _exceptionable = true) =>
++        (((typeof input === 'object' && input !== null) ||
++          _report(true, {
++            path: `${_path  }`,
++            expected: 'NpmMarkLatestLock',
++            value: input,
++          })) &&
++          _vo0(input, `${_path  }`, true)) ||
++        _report(true, {
++          path: `${_path  }`,
++          expected: 'NpmMarkLatestLock',
++          value: input,
++        }))(input, '$input', true)
++      const success = errors.length === 0 
++      return success
++        ? {
++            success,
++            data: input,
++          }
++        : {
++            success,
++            errors,
++            data: input,
++          }
++    }
++    return {
++      success: true,
++      data: input,
++    }
++  })
++})()
++function npm({
++  client: defaultClient,
++  onBreakPeerDep = 'set',
++  updateLockFile = true,
++  trustedPublish,
++  bumpDep: getBumpDepType = ({ kind }) => {
++    switch (kind) {
++      case 'dependencies':
++      case 'optionalDependencies': {
++        return 'patch'
++      }
++      case 'devDependencies': {
++        return false
++      }
++      case 'peerDependencies': {
++        if (onBreakPeerDep === 'ignore') return false
++        return 'major'
++      }
++    }
++  },
++} = {}) {
++  return {
++    name: 'npm',
++    async init() {
++      if (defaultClient)
++        this.npm = {
++          client: defaultClient,
++          agent: defaultClient,
++        }
++      else {
++        const result = await detect({ cwd: this.cwd })
++        this.npm = {
++          client: result?.name ?? 'npm',
++          agent: result?.agent ?? 'npm',
++        }
++      }
++    },
++    async resolve() {
++      if (!this.npm) return
++      const graph = await resolveNpmGraph(this.cwd, this.npm.client)
++      if (graph.packages.size === 0) return
++      this.npm.graph = graph
++      for (const pkg of graph.packages.values()) this.graph.add(pkg)
++    },
++    async publishPreflight({ pkg }) {
++      if (!(pkg instanceof NpmPackage) || !this.npm?.graph) return
++      const optionalWait = []
++      for (const { linked } of pkg.listDependencies(this.npm.graph))
++        if (linked) optionalWait.push(linked.id)
++      return {
++        shouldPublish: pkg.version !== void 0 && pkg.manifest.private !== true,
++        optionalWait: optionalWait.length > 0 ? optionalWait : void 0,
++      }
++    },
++    resolvePlanStatus({ plan }) {
++      if (!this.npm?.graph) return
++      return Array.from(plan.packages, async ([id, { preflight }]) => {
++        if (!preflight.shouldPublish) return
++        const pkg = this.graph.get(id)
++        if (!(pkg instanceof NpmPackage) || !pkg.version) return
++        if (
++          !(await isPackagePublished(pkg.name, pkg.version, pkg.getRegistry()))
++        )
++          return 'pending'
++      })
++    },
++    initPublishLock({ lock, draft }) {
++      for (const [id, pkg] of draft.getPackageDrafts()) {
++        if (!pkg.npm) continue
++        lock.write('npm:packages', {
++          id,
++          distTag: pkg.npm.distTag,
++        })
++      }
++    },
++    initPublishPlan({ lock, plan }) {
++      let data
++      while ((data = lock.read('npm:packages'))) {
++        const validated = validateNpmPackageLock(data)
++        if (!validated.success) continue
++        const parsed = validated.data
++        const packagePlan = plan.packages.get(parsed.id)
++        if (!packagePlan) continue
++        packagePlan.npm = { distTag: parsed.distTag }
++      }
++      while ((data = lock.read('npm:mark-latest'))) {
++        const validated = validateNpmMarkLatestLock(data)
++        if (!validated.success) continue
++        const parsed = validated.data
++        const packagePlan = plan.packages.get(parsed.id)
++        if (!packagePlan) continue
++        packagePlan.npm ??= {}
++        packagePlan.npm.markLatest = true
++      }
++    },
++    async publish({ pkg, plan }) {
++      if (!(pkg instanceof NpmPackage) || !this.npm) return
++      const { distTag, markLatest } = plan.packages.get(pkg.id)?.npm ?? {}
++      const result = await publish(this.npm.client, pkg, distTag)
++      if (result.type === 'published' && markLatest) {
++        const tagResult = await x(
++          'npm',
++          [
++            'dist-tag',
++            'add',
++            `${pkg.name}@${pkg.version}`,
++            'latest',
++            '--registry',
++            pkg.getRegistry(),
++          ],
++          { nodeOptions: { cwd: pkg.path } }
++        )
++        if (tagResult.exitCode !== 0)
++          return {
++            type: 'failed',
++            error: execFailure('Failed to mark package as latest', tagResult)
++              .message,
++          }
++      }
++      return result
++    },
++    initDraft(plan) {
++      if (!this.npm?.graph) return
++      plan.addPolicy(depsPolicy(this, getBumpDepType))
++    },
++    async applyDraft(draft) {
++      if (!this.npm?.graph) return
++      const npmGraph = this.npm.graph
++      const writes = []
++      for (const pkg of npmGraph.packages.values()) {
++        const bumped = draft.getPackageDraft(pkg.id)?.bumpVersion(pkg)
++        if (bumped) pkg.manifest.version = bumped
++      }
++      for (const pkg of npmGraph.packages.values()) {
++        for (const dep of pkg.listDependencies(npmGraph)) {
++          if (!dep.linked?.version || !dep.range || !dep.setRange) continue
++          if (
++            semver$1.satisfies(dep.linked.version, dep.range, {
++              includePrerelease: dep.spec.protocol === 'workspace',
++            })
++          )
++            continue
++          const isPeer = dep.field === 'peerDependencies'
++          if (isPeer && onBreakPeerDep === 'ignore') continue
++          let updatedRange
++          if (isPeer && onBreakPeerDep === 'set')
++            updatedRange = dep.linked.version
++          else if (isPeer && onBreakPeerDep === 'error')
++            throw new Error(
++              `[Tegami] the version of "${dep.linked.name}" is beyond its peer dependency constraint "${formatDependencySpec(dep.spec)}" in package "${pkg.name}", please update the constraint to satisfy.`
++            )
++          else if (dep.range.startsWith('^'))
++            updatedRange = `^${dep.linked.version}`
++          else if (dep.range.startsWith('~'))
++            updatedRange = `~${dep.linked.version}`
++          else updatedRange = dep.linked.version
++          dep.setRange(updatedRange)
++        }
++        writes.push(pkg.write())
++      }
++      for (const source of npmGraph.catalogs) writes.push(source.write?.())
++      await Promise.all(writes)
++    },
++    async applyCliDraft() {
++      if (!this.npm?.graph || !updateLockFile) return
++      let args
++      switch (this.npm.agent) {
++        case 'pnpm':
++        case 'pnpm@6':
++        case 'aube':
++        case 'nub': {
++          args = ['install', '--lockfile-only', '--no-frozen-lockfile']
++          break
++        }
++        case 'npm': {
++          args = ['install', '--package-lock-only']
++          break
++        }
++        case 'bun': {
++          args = ['install', '--lockfile-only']
++          break
++        }
++        case 'yarn@berry': {
++          args = ['install', '--mode=update-lockfile', '--no-immutable']
++          break
++        }
++        default: {
++          args = ['install']
++        }
++      }
++      const result = await x(this.npm.client, args, {
++        nodeOptions: { cwd: this.cwd },
++      })
++      if (result.exitCode !== 0)
++        throw execFailure('Failed to update lockfile.', result)
++    },
++    initCli(cli) {
++      if (!trustedPublish) return
++      registerNpmCli(cli, trustedPublish)
++    },
++  }
+ }
+ function depsPolicy(context, getBumpDepType) {
+-	const npmGraph = context.npm?.graph;
+-	if (!npmGraph) throw new Error("npm graph is missing");
+-	const dependentMap = /* @__PURE__ */ new Map();
+-	for (const pkg of npmGraph.packages.values()) for (const resolved of pkg.listDependencies(npmGraph)) {
+-		if (!resolved.linked) continue;
+-		const refs = dependentMap.get(resolved.linked.id);
+-		const ref = {
+-			dependent: pkg,
+-			kind: resolved.field,
+-			name: resolved.name,
+-			spec: resolved.spec,
+-			resolved
+-		};
+-		if (refs) refs.push(ref);
+-		else dependentMap.set(resolved.linked.id, [ref]);
+-	}
+-	function needsDependencyUpdate(resolved, target) {
+-		if (!resolved.linked) return false;
+-		switch (resolved.spec.protocol) {
+-			case "file":
+-			case "portal": return true;
+-			case "workspace": switch (resolved.spec.range) {
+-				case "":
+-				case "*": return true;
+-				case "^":
+-				case "~": return !semver$1.satisfies(target, `${resolved.spec.range}${resolved.linked.version ?? "0.0.0"}`, { includePrerelease: true });
+-			}
+-		}
+-		if (!resolved.range || !semver$1.validRange(resolved.range)) return false;
+-		return !semver$1.satisfies(target, resolved.range);
+-	}
+-	return {
+-		id: "npm:deps",
+-		onUpdate({ pkg, packageDraft: plan }) {
+-			if (!(pkg instanceof NpmPackage)) return;
+-			const deps = dependentMap.get(pkg.id);
+-			if (!deps) return;
+-			const bumped = plan.bumpVersion(pkg);
+-			if (!bumped) return;
+-			for (const dep of deps) {
+-				if (pkg.group?.options.syncBump && dep.dependent.group === pkg.group) continue;
+-				if (!needsDependencyUpdate(dep.resolved, bumped)) continue;
+-				const bumpType = getBumpDepType(dep);
+-				if (bumpType === false) continue;
+-				this.bumpPackage(dep.dependent, {
+-					type: bumpType,
+-					reason: `update dependency "${dep.name}"`
+-				});
+-			}
+-		}
+-	};
++  const npmGraph = context.npm?.graph
++  if (!npmGraph) throw new Error('npm graph is missing')
++  const dependentMap = /* @__PURE__ */ new Map()
++  for (const pkg of npmGraph.packages.values())
++    for (const resolved of pkg.listDependencies(npmGraph)) {
++      if (!resolved.linked) continue
++      const refs = dependentMap.get(resolved.linked.id)
++      const ref = {
++        dependent: pkg,
++        kind: resolved.field,
++        name: resolved.name,
++        spec: resolved.spec,
++        resolved,
++      }
++      if (refs) refs.push(ref)
++      else dependentMap.set(resolved.linked.id, [ref])
++    }
++  function needsDependencyUpdate(resolved, target) {
++    if (!resolved.linked) return false
++    switch (resolved.spec.protocol) {
++      case 'file':
++      case 'portal': {
++        return true
++      }
++      case 'workspace': {
++        switch (resolved.spec.range) {
++          case '':
++          case '*':
++            return true
++          case '^':
++          case '~':
++            return !semver$1.satisfies(
++              target,
++              `${resolved.spec.range}${resolved.linked.version ?? '0.0.0'}`,
++              { includePrerelease: true }
++            )
++        }
++      }
++    }
++    if (!resolved.range || !semver$1.validRange(resolved.range)) return false
++    return !semver$1.satisfies(target, resolved.range)
++  }
++  return {
++    id: 'npm:deps',
++    onUpdate({ pkg, packageDraft: plan }) {
++      if (!(pkg instanceof NpmPackage)) return
++      const deps = dependentMap.get(pkg.id)
++      if (!deps) return
++      const bumped = plan.bumpVersion(pkg)
++      if (!bumped) return
++      for (const dep of deps) {
++        if (pkg.group?.options.syncBump && dep.dependent.group === pkg.group)
++          continue
++        if (!needsDependencyUpdate(dep.resolved, bumped)) continue
++        const bumpType = getBumpDepType(dep)
++        if (bumpType === false) continue
++        this.bumpPackage(dep.dependent, {
++          type: bumpType,
++          reason: `update dependency "${dep.name}"`,
++        })
++      }
++    },
++  }
+ }
+ async function publish(client, pkg, distTag) {
+-	if (!pkg.version || await isPackagePublished(pkg.name, pkg.version, pkg.getRegistry())) return { type: "skipped" };
+-	if (client === "bun") {
+-		for (const script of [
+-			"prepublishOnly",
+-			"prepack",
+-			"prepare"
+-		]) {
+-			if (!pkg.manifest.scripts?.[script]) continue;
+-			const result = await x("bun", ["run", script], { nodeOptions: { cwd: pkg.path } });
+-			if (result.exitCode === 0) continue;
+-			return {
+-				type: "failed",
+-				error: execFailure(`Failed to run ${script} script for ${pkg.name}@${pkg.version}.`, result).message
+-			};
+-		}
+-		const tarballPath = path.resolve(pkg.path, "pkg.tgz");
+-		const packResult = await x("bun", [
+-			"pm",
+-			"pack",
+-			"--filename",
+-			tarballPath
+-		], { nodeOptions: { cwd: pkg.path } });
+-		if (packResult.exitCode !== 0) return {
+-			type: "failed",
+-			error: execFailure(`Failed to pack ${pkg.name}@${pkg.version}.`, packResult).message
+-		};
+-		const publishArgs = ["publish", tarballPath];
+-		if (distTag) publishArgs.push("--tag", distTag);
+-		const publishResult = await x("npm", publishArgs, { nodeOptions: {
+-			cwd: pkg.path,
+-			...!isCI() && process.stdin.isTTY ? { stdio: "inherit" } : {}
+-		} });
+-		if (publishResult.exitCode !== 0) return {
+-			type: "failed",
+-			error: execFailure(`Failed to publish ${pkg.name}@${pkg.version}${distTag ? ` with dist-tag "${distTag}"` : ""}.`, publishResult).message
+-		};
+-		return { type: "published" };
+-	}
+-	let command;
+-	const args = ["publish"];
+-	if (distTag) args.push("--tag", distTag);
+-	switch (client) {
+-		case "pnpm":
+-			command = "pnpm";
+-			args.push("--no-git-checks");
+-			break;
+-		case "aube":
+-		case "nub":
+-		case "yarn":
+-			command = client;
+-			break;
+-		default:
+-			command = "npm";
+-			break;
+-	}
+-	const result = await x(command, args, { nodeOptions: {
+-		cwd: pkg.path,
+-		...!isCI() && process.stdin.isTTY ? { stdio: "inherit" } : {}
+-	} });
+-	if (result.exitCode !== 0) return {
+-		type: "failed",
+-		error: execFailure(`Failed to publish ${pkg.name}@${pkg.version}${distTag ? ` with dist-tag "${distTag}"` : ""}.`, result).message
+-	};
+-	return { type: "published" };
++  if (
++    !pkg.version ||
++    (await isPackagePublished(pkg.name, pkg.version, pkg.getRegistry()))
++  )
++    return { type: 'skipped' }
++  if (client === 'bun') {
++    for (const script of ['prepublishOnly', 'prepack', 'prepare']) {
++      if (!pkg.manifest.scripts?.[script]) continue
++      const result = await x('bun', ['run', script], {
++        nodeOptions: { cwd: pkg.path },
++      })
++      if (result.exitCode === 0) continue
++      return {
++        type: 'failed',
++        error: execFailure(
++          `Failed to run ${script} script for ${pkg.name}@${pkg.version}.`,
++          result
++        ).message,
++      }
++    }
++    const tarballPath = path.resolve(pkg.path, 'pkg.tgz')
++    const packResult = await x(
++      'bun',
++      ['pm', 'pack', '--filename', tarballPath],
++      { nodeOptions: { cwd: pkg.path } }
++    )
++    if (packResult.exitCode !== 0)
++      return {
++        type: 'failed',
++        error: execFailure(
++          `Failed to pack ${pkg.name}@${pkg.version}.`,
++          packResult
++        ).message,
++      }
++    const publishArgs = ['publish', tarballPath]
++    if (distTag) publishArgs.push('--tag', distTag)
++    const publishResult = await x('bun', publishArgs, {
++      nodeOptions: {
++        cwd: pkg.path,
++        ...(!isCI() && process.stdin.isTTY ? { stdio: 'inherit' } : {}),
++      },
++    })
++    if (publishResult.exitCode !== 0)
++      return {
++        type: 'failed',
++        error: execFailure(
++          `Failed to publish ${pkg.name}@${pkg.version}${distTag ? ` with dist-tag "${distTag}"` : ''}.`,
++          publishResult
++        ).message,
++      }
++    return { type: 'published' }
++  }
++  let command
++  const args = ['publish']
++  if (distTag) args.push('--tag', distTag)
++  switch (client) {
++    case 'pnpm': {
++      command = 'pnpm'
++      args.push('--no-git-checks')
++      break
++    }
++    case 'aube':
++    case 'nub':
++    case 'yarn': {
++      command = client
++      break
++    }
++    default: {
++      command = 'npm'
++      break
++    }
++  }
++  const result = await x(command, args, {
++    nodeOptions: {
++      cwd: pkg.path,
++      ...(!isCI() && process.stdin.isTTY ? { stdio: 'inherit' } : {}),
++    },
++  })
++  if (result.exitCode !== 0)
++    return {
++      type: 'failed',
++      error: execFailure(
++        `Failed to publish ${pkg.name}@${pkg.version}${distTag ? ` with dist-tag "${distTag}"` : ''}.`,
++        result
++      ).message,
++    }
++  return { type: 'published' }
+ }
+ async function isPackagePublished(name, version, registry) {
+-	const response = await fetch(joinPath(registry, name, version), { headers: { Accept: "application/json" } });
+-	if (response.status === 404) return false;
+-	if (!response.ok) throw await fetchFailure(`Unable to validate ${name}@${version} against the npm registry${registry ? ` "${registry}"` : ""}`, response);
+-	return true;
++  const response = await fetch(joinPath(registry, name, version), {
++    headers: { Accept: 'application/json' },
++  })
++  if (response.status === 404) return false
++  if (!response.ok)
++    throw await fetchFailure(
++      `Unable to validate ${name}@${version} against the npm registry${registry ? ` "${registry}"` : ''}`,
++      response
++    )
++  return true
+ }
+ //#endregion
+-export { NpmPackage as n, npm as t };
++export { NpmPackage as n, npm as t }
