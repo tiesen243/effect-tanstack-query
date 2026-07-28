@@ -1,4 +1,3 @@
-import { QueryClient } from '@tanstack/query-core'
 import { Context, Function, Layer, ManagedRuntime } from 'effect'
 import {
   FetchHttpClient,
@@ -30,7 +29,3 @@ class ApiClient extends Context.Service<
 
 const runtime = ManagedRuntime.make(ApiClient.live)
 export const api = createTanstackQueryOptionsProxy(ApiClient, runtime)
-
-new QueryClient().invalidateQueries({
-  queryKey: api.ApiGroup.hello.getQueryKey(),
-})

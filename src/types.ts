@@ -1,6 +1,9 @@
 // oxlint-disable typescript/no-empty-object-type typescript/ban-types
 
-import type { MutationOptions, QueryOptions } from '@tanstack/query-core'
+import type {
+  MutationOptions,
+  DefinedInitialDataOptions,
+} from '@tanstack/react-query'
 import type { Schema } from 'effect/Schema'
 import type { Client } from 'effect/unstable/httpapi/HttpApiClient'
 import type { HttpApiEndpoint } from 'effect/unstable/httpapi/HttpApiEndpoint'
@@ -23,7 +26,12 @@ export type TanstackQueryOptionsProxy<T> =
   >
     ? {
         queryOptions: Method extends 'GET'
-          ? <TQuery = QueryOptions<UnwrapCodec<Success>, UnwrapCodec<Error>>>(
+          ? <
+              TQuery = DefinedInitialDataOptions<
+                UnwrapCodec<Success>,
+                UnwrapCodec<Error>
+              >,
+            >(
               input: MakeOptionalInput<
                 ([Params] extends [never]
                   ? {}

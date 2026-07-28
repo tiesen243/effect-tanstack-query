@@ -1,4 +1,7 @@
-import type { MutationOptions, QueryOptions } from '@tanstack/query-core'
+import type {
+  DefinedInitialDataOptions,
+  MutationOptions,
+} from '@tanstack/react-query'
 import type { Service } from 'effect/Context'
 import type { ManagedRuntime } from 'effect/ManagedRuntime'
 
@@ -112,7 +115,7 @@ function createTanstackQueryOptionsProxy<TServiceTag, TService>(
               ...options,
               queryKey: createKey('query', input),
               queryFn: ({ signal }) => execute(input, signal),
-            } satisfies QueryOptions
+            } satisfies DefinedInitialDataOptions
 
           if (action === 'getQueryKey') return createKey('query', input)
 
