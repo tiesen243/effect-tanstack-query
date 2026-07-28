@@ -7,6 +7,11 @@
     "tanstack-intent",
     "typesafe"
   ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiesen243/effect-tanstack-query.git"
+  },
   "type": "module",
   "exports": {
     ".": {

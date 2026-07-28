@@ -23,3 +23,4 @@ jobs:
         run: bun tegami ci
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
