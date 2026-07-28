@@ -9,6 +9,7 @@ permissions:
 
 jobs:
   preview:
+    name: Release preview
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -17,7 +18,8 @@ jobs:
       - name: Release preview
         run: bun tegami pr preview --artifact tegami-pr-preview.md
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload preview
+        uses: actions/upload-artifact@v4
         with:
-          name: pr-preview
+          name: tegami-pr-preview
           path: tegami-pr-preview.md

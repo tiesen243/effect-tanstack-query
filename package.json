@@ -1,5 +1,5 @@
 {
-  "name": "effect-tanstack-query",
+  "name": "@tiesen/effect-tanstack-query",
   "version": "0.0.0",
   "private": false,
   "type": "module",
