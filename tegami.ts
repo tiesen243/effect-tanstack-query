@@ -7,10 +7,6 @@ const paper = tegami({
     client: 'bun',
     updateLockFile: true,
     onBreakPeerDep: 'set',
-    trustedPublish: {
-      provider: 'github',
-      workflow: 'release.yml',
-    },
   },
 
   plugins: [
