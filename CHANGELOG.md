@@ -1,3 +1,9 @@
+## @tiesen/effect-tanstack-query@0.0.10
+
+### Make react optional peerDependency
+
+Made `react` an optional peer dependency for `@tiesen/effect-tanstack-query`.
+
 ## @tiesen/effect-tanstack-query@0.0.9
 
 ### Refactor & Improvements
