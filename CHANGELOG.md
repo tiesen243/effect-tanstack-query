@@ -1,3 +1,11 @@
+## @tiesen/effect-tanstack-query@0.0.7
+
+### Features
+
+- **stream**: Add support for event streaming / subscriptions via `subscriptionOptions`.
+- **hooks**: Introduce `useSubscription` hook to easily bind Effect-backed event streams directly to React components.
+- Auto-handles `AbortSignal` listeners and fiber interruption on unsubscribe.
+
 ## @tiesen/effect-tanstack-query@0.0.6
 
 ### Update project metadata
