@@ -32,10 +32,10 @@ import type { SubscriptionOptions, TanstackQueryOptionsProxy } from './types'
  * class Api extends HttpApi.make('Api').add(ApiGroup) {}
  *
  * class ApiClient extends Context.Service<ApiClient, HttpApiClient.ForApi<typeof Api>>()('ApiClient') {
- *   public static live = Layer.effect(this, HttpApiClient.make(Api)).pipe(Layer.provide(FetchHttpClient.layer))
+ *   public static layer = Layer.effect(this, HttpApiClient.make(Api)).pipe(Layer.provide(FetchHttpClient.layer))
  * }
  *
- * const runtime = ManagedRuntime.make(ApiClient.live)
+ * const runtime = ManagedRuntime.make(ApiClient.layer)
  * const api = createTanstackQueryOptionsProxy(ApiClient, runtime);
  *
  * // Example usage in a React component with TanStack Query
@@ -48,7 +48,7 @@ import type { SubscriptionOptions, TanstackQueryOptionsProxy } from './types'
  *
  * useSubscription(api.stream.subscriptionOptions({
  *   onData: (data) => console.log(data),
- *             ^? const data: string = "data: keep-alive\n\n"
+ *             ^? const data: string = "Never gonna give you up, never gonna let you down..."
  * }))
  * ```
  */
