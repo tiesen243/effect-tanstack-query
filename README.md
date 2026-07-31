@@ -1,5 +1,11 @@
 # effect-tanstack-query
 
+<p align="center">
+  <a href="https://npmx.dev/package/@tiesen/effect-tanstack-query"><img src="https://img.shields.io/npm/dw/%40tiesen%2Feffect-tanstack-query" alt="Total Downloads"></a>
+  <a href="https://npmx.dev/package/@tiesen/effect-tanstack-query"><img src="https://img.shields.io/npm/v/%40tiesen%2Feffect-tanstack-query" alt="Latest Stable Version"></a>
+  <a href="https://npmx.dev/package/@tiesen/effect-tanstack-query"><img src="https://img.shields.io/npm/l/%40tiesen%2Feffect-tanstack-query" alt="License"></a>
+</p>
+
 A lightweight, type-safe bridge between **Effect HTTP API clients** and **TanStack Query** (`queryOptions`, `mutationOptions`, and `getQueryKey`).
 
 ## Features
@@ -132,6 +138,11 @@ void queryClient.invalidateQueries({
   queryKey: api.group.hello.getQueryKey(),
 })
 ```
+
+## Downloads
+
+![npmx downloads (Dark)](https://npmx.dev/api/embed/downloads.svg?packages=%40tiesen%2Feffect-tanstack-query&metric=downloads&startDate=2025-08-01&endDate=2026-07-30&mode=dark&granularity=weekly&locale=en-US&accent=oklch%2867.3%25+0+0%29&yLabel=Weekly+Downloads#gh-dark-mode-only)
+![npmx downloads (Light)](https://npmx.dev/api/embed/downloads.svg?packages=%40tiesen%2Feffect-tanstack-query&metric=downloads&startDate=2025-08-01&endDate=2026-07-30&mode=light&granularity=weekly&locale=en-US&accent=oklch%2867.3%25+0+0%29&yLabel=Weekly+Downloads#gh-light-mode-only)
 
 ## License
 
