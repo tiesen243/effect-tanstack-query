@@ -7,6 +7,10 @@ import type {
 import type { Schema } from 'effect/Schema'
 import type { Client } from 'effect/unstable/httpapi/HttpApiClient'
 import type { HttpApiEndpoint } from 'effect/unstable/httpapi/HttpApiEndpoint'
+import type {
+  SseEventFromData,
+  StreamSse,
+} from 'effect/unstable/httpapi/HttpApiSchema'
 
 export type TanstackQueryOptionsProxy<T> =
   T extends Client.Method<
@@ -46,6 +50,31 @@ export type TanstackQueryOptionsProxy<T> =
               options?: Omit<TQuery, 'queryKey' | 'queryFn'>
             ) => TQuery
           : never
+
+        subscriptionOptions: Success extends StreamSse<
+          SseEventFromData<infer StreamSuccess>,
+          infer StreamError,
+          infer _StreamValue
+        >
+          ? (
+              input: MakeOptionalInput<
+                ([Params] extends [never]
+                  ? {}
+                  : { params: UnwrapCodec<Params> }) &
+                  ([Query] extends [never]
+                    ? {}
+                    : { query: UnwrapCodec<Query> }) &
+                  ([Headers] extends [never]
+                    ? {}
+                    : { headers: UnwrapCodec<Headers> })
+              >,
+              options?: {
+                onData: (data: StreamSuccess) => void
+                onError?: (error: StreamError) => void
+              }
+            ) => SubscriptionOptions<StreamSuccess, StreamError>
+          : never
+
         mutationOptions: Method extends 'GET'
           ? never
           : <
@@ -89,6 +118,21 @@ export type TanstackQueryOptionsProxy<T> =
           readonly [K in keyof T]: TanstackQueryOptionsProxy<T[K]>
         }
       : T
+
+type UnsubscribeFn = () => void
+
+export interface SubscriptionOptions<TData, TError> {
+  subcriptionKey: readonly unknown[]
+  subscriptionFn: (options: { signal?: AbortSignal }) => UnsubscribeFn
+
+  onData: (data: TData) => void
+  onError?: (error: TError) => void
+}
+
+export interface SubscriptionReturns {
+  status: 'connecting' | 'connected' | 'disconnected' | 'error'
+  reconnect: () => void
+}
 
 type UnwrapCodec<T> =
   T extends Schema<unknown>

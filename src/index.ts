@@ -4,14 +4,16 @@ import type {
 } from '@tanstack/react-query'
 import type { Service } from 'effect/Context'
 import type { ManagedRuntime } from 'effect/ManagedRuntime'
+import type { HttpClientResponse } from 'effect/unstable/http/HttpClientResponse'
 
 import * as Effect from 'effect/Effect'
+import * as Stream from 'effect/Stream'
 
-import type { TanstackQueryOptionsProxy } from './types'
+import type { SubscriptionOptions, TanstackQueryOptionsProxy } from './types'
 
 /**
  * Creates a type-safe proxy that bridges Effect `HttpApiClient` endpoints
- * with TanStack Query options (`queryOptions`, `mutationOptions`, and `getQueryKey`).
+ * with TanStack Query options (`queryOptions`, `subscriptionOptions`, `mutationOptions`, and `getQueryKey`).
  *
  * @param tag - The Effect `Service` tag used to locate the client implementation within the Context.
  * @param runtime - The Effect `ManagedRuntime` used to execute effects as promises.
@@ -21,13 +23,14 @@ import type { TanstackQueryOptionsProxy } from './types'
  * @example
  * ```ts
  * class ApiGroup extends HttpApiGroup.make('ApiGroup')
- *  .add(HttpApiEndpoint.get('hello', '/hello', { success: Schema.String, query: Schema.Struct({ name: Schema.String }) }))
- *  .add(HttpApiEndpoint.post('bye', '/bye', { success: Schema.String, payload: Schema.Struct({ name: Schema.String }) })) {}
+ *   .add(HttpApiEndpoint.get('hello', '/hello', { success: Schema.String, query: Schema.Struct({ name: Schema.String }) }))
+ *   .add(HttpApiEndpoint.post('bye', '/bye', { success: Schema.String, payload: Schema.Struct({ name: Schema.String }) }))
+ *   .add(HttpApiEndpoint.get('stream', '/stream', { success: HttpApiSchema.StreamSse({ data: Schema.String }) })) {}
  *
  * class Api extends HttpApi.make('Api').add(ApiGroup) {}
  *
  * class ApiClient extends Context.Service<ApiClient, HttpApiClient.ForApi<typeof Api>>()('ApiClient') {
- *  public static live = Layer.effect(this, HttpApiClient.make(Api)).pipe(Layer.provide(FetchHttpClient.layer))
+ *   public static live = Layer.effect(this, HttpApiClient.make(Api)).pipe(Layer.provide(FetchHttpClient.layer))
  * }
  *
  * const runtime = ManagedRuntime.make(ApiClient.live)
@@ -35,11 +38,16 @@ import type { TanstackQueryOptionsProxy } from './types'
  *
  * // Example usage in a React component with TanStack Query
  * const { data } = useQuery(api.hello.queryOptions({ query: { name: 'World' } }))
- * //       ^? const data: string = "Hello, World!"
+ *          ^? const data: string = "Hello, World!"
  *
  * const { mutate, data } = useMutation(api.bye.mutationOptions())
- * //               ^? const data: string = "Goodbye, World!"
+ *                  ^? const data: string = "Goodbye, World!"
  * mutate({ name: 'World' })
+ *
+ * useSubscription(api.stream.subscriptionOptions({
+ *   onData: (data) => console.log(data),
+ *             ^? const data: string = "data: keep-alive\n\n"
+ * }))
  * ```
  */
 function createTanstackQueryOptionsProxy<TServiceTag, TService>(
@@ -76,6 +84,16 @@ function createTanstackQueryOptionsProxy<TServiceTag, TService>(
           const apiPath = path.slice(0, -1)
           const [input, options] = args
 
+          const program = Effect.fn(function* program(params: unknown) {
+            // oxlint-disable-next-line typescript/no-explicit-any
+            const api: any = yield* tag
+
+            let fn = api
+            for (const p of apiPath) fn = fn[p]
+
+            return yield* fn(params)
+          })
+
           /**
            * Executes the targeted Effect HTTP API endpoint by navigating the service instance.
            *
@@ -85,15 +103,7 @@ function createTanstackQueryOptionsProxy<TServiceTag, TService>(
            */
           const execute = (params: unknown, signal?: AbortSignal) =>
             runtime.runPromise(
-              Effect.gen(function* executeGen() {
-                // oxlint-disable-next-line typescript/no-explicit-any
-                const api: any = yield* tag
-
-                let fn = api
-                for (const p of apiPath) fn = fn[p]
-
-                return yield* fn(params)
-              }) as Effect.Effect<unknown, unknown, TServiceTag>,
+              program(params) as Effect.Effect<unknown, unknown, TServiceTag>,
               { signal }
             )
 
@@ -118,6 +128,53 @@ function createTanstackQueryOptionsProxy<TServiceTag, TService>(
             } satisfies DefinedInitialDataOptions
 
           if (action === 'getQueryKey') return createKey('query', input)
+
+          if (action === 'subscriptionOptions') {
+            const stream = Stream.unwrap(
+              program({ ...input, responseMode: 'response-only' }).pipe(
+                Effect.map((response: HttpClientResponse) =>
+                  response.stream.pipe(Stream.decodeText())
+                )
+              )
+            )
+            const streamOptions = options as SubscriptionOptions<
+              unknown,
+              unknown
+            >
+
+            return {
+              ...options,
+              subcriptionKey: createKey('subscription', input),
+              subscriptionFn: ({ signal } = {}) => {
+                const runFork = runtime.runFork(
+                  stream.pipe(
+                    Stream.tap((data) =>
+                      Effect.sync(() => streamOptions.onData(data))
+                    ),
+                    Stream.runDrain
+                  ) as Effect.Effect<unknown, unknown, TServiceTag>
+                )
+
+                const unsubscribe = () => runFork.interruptUnsafe(runFork.id)
+
+                if (signal) {
+                  if (signal.aborted) unsubscribe()
+                  else
+                    signal.addEventListener('abort', unsubscribe, {
+                      once: true,
+                    })
+                }
+
+                runFork.addObserver((exit) => {
+                  // oxlint-disable-next-line no-underscore-dangle
+                  if (exit._tag === 'Failure')
+                    streamOptions.onError?.(exit.cause)
+                })
+
+                return unsubscribe
+              },
+            } satisfies SubscriptionOptions<unknown, unknown>
+          }
 
           if (action === 'mutationOptions')
             return {

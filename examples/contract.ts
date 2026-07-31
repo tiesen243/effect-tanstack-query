@@ -1,9 +1,14 @@
 // oxlint-disable max-classes-per-file
 
 import { Schema } from 'effect'
-import { HttpApi, HttpApiEndpoint, HttpApiGroup } from 'effect/unstable/httpapi'
+import {
+  HttpApi,
+  HttpApiEndpoint,
+  HttpApiGroup,
+  HttpApiSchema,
+} from 'effect/unstable/httpapi'
 
-class ApiGroup extends HttpApiGroup.make('ApiGroup')
+class ApiGroup extends HttpApiGroup.make('group')
   .add(
     HttpApiEndpoint.get('hello', '/hello/:name', {
       success: Schema.String,
@@ -21,6 +26,13 @@ class ApiGroup extends HttpApiGroup.make('ApiGroup')
       success: Schema.String,
       payload: Schema.Struct({
         name: Schema.String,
+      }),
+    })
+  )
+  .add(
+    HttpApiEndpoint.get('stream', '/stream', {
+      success: HttpApiSchema.StreamSse({
+        data: Schema.String,
       }),
     })
   ) {}

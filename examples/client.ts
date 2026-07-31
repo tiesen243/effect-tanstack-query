@@ -1,9 +1,5 @@
-import { Context, Function, Layer, ManagedRuntime } from 'effect'
-import {
-  FetchHttpClient,
-  HttpClient,
-  HttpClientRequest,
-} from 'effect/unstable/http'
+import { Context, Layer, ManagedRuntime } from 'effect'
+import { FetchHttpClient } from 'effect/unstable/http'
 import { HttpApiClient } from 'effect/unstable/httpapi'
 
 import { createTanstackQueryOptionsProxy } from '../dist/index.mjs'
@@ -16,13 +12,7 @@ class ApiClient extends Context.Service<
   public static live = Layer.effect(
     this,
     HttpApiClient.make(Api, {
-      transformClient: (client) =>
-        client.pipe(
-          HttpClient.mapRequest(
-            // oxlint-disable-next-line unicorn/max-nested-calls
-            Function.flow(HttpClientRequest.prependUrl('http://localhost:3000'))
-          )
-        ),
+      baseUrl: 'http://localhost:3000',
     })
   ).pipe(Layer.provide(FetchHttpClient.layer))
 }
