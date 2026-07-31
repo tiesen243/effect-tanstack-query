@@ -21,12 +21,19 @@ const ApiGroupLive = HttpApiBuilder.group(Api, 'group', (handlers) =>
       Effect.fn(function* streamHandler() {
         yield* Effect.logInfo('Client connected')
 
-        const heartbeat = Stream.repeat(
-          Stream.succeed(`data: keep-alive\n\n`),
-          Schedule.spaced('5 seconds')
+        const keepAliveStream = Stream.repeat(
+          Stream.succeed(`:keep-alive\n\n`),
+          Schedule.spaced('10 seconds')
         )
 
-        const stream = heartbeat.pipe(Stream.encodeText)
+        const dataStream = Stream.repeat(
+          Stream.succeed(`data: ${new Date().toISOString()}\n\n`),
+          Schedule.spaced('5 second')
+        )
+
+        const stream = Stream.merge(keepAliveStream, dataStream).pipe(
+          Stream.encodeText
+        )
 
         return HttpServerResponse.stream(stream, {
           contentType: 'text/event-stream',

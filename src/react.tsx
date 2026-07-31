@@ -16,11 +16,13 @@ function useSubscription<TData, TError>({
     setReconnectCount((count) => count + 1)
   }, [])
 
+  const keyHash = React.useMemo(
+    () => JSON.stringify(subscriptionOptions.subcriptionKey),
+    [subscriptionOptions.subcriptionKey]
+  )
+
   React.useEffect(() => {
-    if (!enabled) {
-      setStatus('disconnected')
-      return
-    }
+    if (!enabled) return setStatus('disconnected')
 
     setStatus('connecting')
 
@@ -37,7 +39,7 @@ function useSubscription<TData, TError>({
       unsubscribe()
       setStatus('disconnected')
     }
-  }, [enabled, subscriptionOptions.subscriptionFn, reconnectCount])
+  }, [enabled, keyHash, reconnectCount])
 
   return React.useMemo(() => ({ status, reconnect }), [status, reconnect])
 }

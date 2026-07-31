@@ -4,6 +4,7 @@ import type {
   MutationOptions,
   DefinedInitialDataOptions,
 } from '@tanstack/react-query'
+import type { Input } from 'effect/Duration'
 import type { Schema } from 'effect/Schema'
 import type { Client } from 'effect/unstable/httpapi/HttpApiClient'
 import type { HttpApiEndpoint } from 'effect/unstable/httpapi/HttpApiEndpoint'
@@ -69,10 +70,13 @@ export type TanstackQueryOptionsProxy<T> =
                     : { headers: UnwrapCodec<Headers> })
               >,
               options?: {
-                onData: (data: StreamSuccess) => void
-                onError?: (error: StreamError) => void
+                onData: (data: UnwrapCodec<StreamSuccess>) => void
+                onError?: (error: UnwrapCodec<StreamError>) => void
               }
-            ) => SubscriptionOptions<StreamSuccess, StreamError>
+            ) => SubscriptionOptions<
+              UnwrapCodec<StreamSuccess>,
+              UnwrapCodec<StreamError>
+            >
           : never
 
         mutationOptions: Method extends 'GET'
@@ -127,6 +131,7 @@ export interface SubscriptionOptions<TData, TError> {
 
   onData: (data: TData) => void
   onError?: (error: TError) => void
+  keepAliveTimeout?: Input
 }
 
 export interface SubscriptionReturns {

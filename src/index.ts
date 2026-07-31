@@ -7,6 +7,8 @@ import type { ManagedRuntime } from 'effect/ManagedRuntime'
 import type { HttpClientResponse } from 'effect/unstable/http/HttpClientResponse'
 
 import * as Effect from 'effect/Effect'
+import * as Fiber from 'effect/Fiber'
+import * as Schedule from 'effect/Schedule'
 import * as Stream from 'effect/Stream'
 
 import type { SubscriptionOptions, TanstackQueryOptionsProxy } from './types'
@@ -110,7 +112,7 @@ function createTanstackQueryOptionsProxy<TServiceTag, TService>(
           /**
            * Constructs a consistent, structured array key for TanStack Query caching.
            *
-           * @param queryType - The operation type (`'query'` or `'mutation'`).
+           * @param queryType - The operation type (`'query'` or `'mutation' or 'subscription'`).
            * @param inp - The input parameters or payload associated with the endpoint request.
            * @returns A read-only query key array.
            */
@@ -129,33 +131,70 @@ function createTanstackQueryOptionsProxy<TServiceTag, TService>(
 
           if (action === 'getQueryKey') return createKey('query', input)
 
+          if (action === 'mutationOptions')
+            return {
+              ...options,
+              mutationKey: createKey('mutation', input),
+              mutationFn: (payload) => execute({ payload }),
+            } satisfies MutationOptions
+
           if (action === 'subscriptionOptions') {
-            const stream = Stream.unwrap(
-              program({ ...input, responseMode: 'response-only' }).pipe(
-                Effect.map((response: HttpClientResponse) =>
-                  response.stream.pipe(Stream.decodeText())
-                )
-              )
-            )
-            const streamOptions = options as SubscriptionOptions<
-              unknown,
-              unknown
-            >
+            const {
+              onData,
+              onError,
+              keepAliveTimeout = '10 seconds',
+            } = options as SubscriptionOptions<unknown, unknown>
 
             return {
               ...options,
               subcriptionKey: createKey('subscription', input),
               subscriptionFn: ({ signal } = {}) => {
-                const runFork = runtime.runFork(
-                  stream.pipe(
-                    Stream.tap((data) =>
-                      Effect.sync(() => streamOptions.onData(data))
-                    ),
-                    Stream.runDrain
-                  ) as Effect.Effect<unknown, unknown, TServiceTag>
+                const handler = Effect.gen(function* handlerGen() {
+                  const response = yield* program({
+                    ...input,
+                    responseMode: 'response-only',
+                  }) as Effect.Effect<HttpClientResponse>
+
+                  const source = yield* response.stream.pipe(
+                    Stream.decodeText,
+                    Stream.splitLines,
+                    Stream.filter((str) => str.length > 0),
+                    Stream.share({ capacity: 'unbounded' })
+                  )
+
+                  const keepAliveStream = source.pipe(
+                    Stream.filter((data) => data.startsWith(':keep-alive')),
+                    Stream.timeout(keepAliveTimeout),
+                    Stream.tapError(() =>
+                      Effect.logError('Keep-alive timeout, reconnecting...')
+                    )
+                  )
+
+                  const dataStream = yield* source.pipe(
+                    Stream.filter((line) => line.startsWith('data:')),
+                    Stream.map((line) => line.slice(5).trim()),
+                    Stream.filter((data) => data.length > 0),
+                    Stream.tap((data) => Effect.sync(() => onData(data))),
+                    Stream.share({ capacity: 'unbounded' })
+                  )
+
+                  const stream = Stream.merge(keepAliveStream, dataStream)
+                  yield* Stream.runDrain(stream)
+                  yield* Effect.fail('restart')
+                }).pipe(
+                  Effect.catchTag('HttpClientError', (cause) => {
+                    // oxlint-disable-next-line no-underscore-dangle
+                    if (cause.reason._tag === 'DecodeError') return Effect.void
+
+                    if (onError) onError(cause)
+                    return Effect.fail(cause)
+                  }),
+                  Effect.scoped,
+                  Effect.retry(Schedule.exponential('3 seconds'))
                 )
 
-                const unsubscribe = () => runFork.interruptUnsafe(runFork.id)
+                const fiber = runtime.runFork(handler)
+                const unsubscribe = () => Fiber.interrupt(fiber)
 
                 if (signal) {
                   if (signal.aborted) unsubscribe()
@@ -165,23 +204,10 @@ function createTanstackQueryOptionsProxy<TServiceTag, TService>(
                     })
                 }
 
-                runFork.addObserver((exit) => {
-                  // oxlint-disable-next-line no-underscore-dangle
-                  if (exit._tag === 'Failure')
-                    streamOptions.onError?.(exit.cause)
-                })
-
                 return unsubscribe
               },
             } satisfies SubscriptionOptions<unknown, unknown>
           }
-
-          if (action === 'mutationOptions')
-            return {
-              ...options,
-              mutationKey: createKey('mutation', input),
-              mutationFn: (payload) => execute({ payload }),
-            } satisfies MutationOptions
         },
       }
     )
