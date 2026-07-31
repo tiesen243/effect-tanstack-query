@@ -33,9 +33,14 @@ pnpm add @tiesen/effect-tanstack-query
 
 ```ts
 import { Schema } from 'effect'
-import { HttpApi, HttpApiEndpoint, HttpApiGroup } from 'effect/unstable/httpapi'
+import {
+  HttpApi,
+  HttpApiEndpoint,
+  HttpApiGroup,
+  HttpApiSchema,
+} from 'effect/unstable/httpapi'
 
-class ApiGroup extends HttpApiGroup.make('ApiGroup')
+class ApiGroup extends HttpApiGroup.make('group')
   .add(
     HttpApiEndpoint.get('hello', '/hello/:name', {
       success: Schema.String,
@@ -54,6 +59,13 @@ class ApiGroup extends HttpApiGroup.make('ApiGroup')
         name: Schema.String,
       }),
     })
+  )
+  .add(
+    HttpApiEndpoint.get('stream', '/stream', {
+      success: HttpApiSchema.StreamSse({
+        data: Schema.String,
+      }),
+    })
   ) {}
 
 export class Api extends HttpApi.make('Api').add(ApiGroup) {}
@@ -62,27 +74,18 @@ export class Api extends HttpApi.make('Api').add(ApiGroup) {}
 ### 2. Create an Effect HTTP API Client
 
 ```ts
-import { Context, Function, Layer } from 'effect'
-import {
-  FetchHttpClient,
-  HttpClient,
-  HttpClientRequest,
-} from 'effect/unstable/http'
+import { Context, Layer } from 'effect'
+import { FetchHttpClient } from 'effect/unstable/http'
 import { HttpApiClient } from 'effect/unstable/httpapi'
 
 class ApiClient extends Context.Service<
   ApiClient,
   HttpApiClient.ForApi<typeof Api>
 >()('ApiClient') {
-  public static live = Layer.effect(
+  public static layer = Layer.effect(
     this,
     HttpApiClient.make(Api, {
-      transformClient: (client) =>
-        client.pipe(
-          HttpClient.mapRequest(
-            Function.flow(HttpClientRequest.prependUrl('http://localhost:3000'))
-          )
-        ),
+      baseUrl: 'http://localhost:3000',
     })
   ).pipe(Layer.provide(FetchHttpClient.layer))
 }
@@ -94,7 +97,7 @@ class ApiClient extends Context.Service<
 import { ManagedRuntime } from 'effect'
 import { createTanstackQueryOptionsProxy } from '@tiesen/effect-tanstack-query'
 
-const runtime = ManagedRuntime.make(ApiClient.live)
+const runtime = ManagedRuntime.make(ApiClient.layer)
 const api = createTanstackQueryOptionsProxy(ApiClient, runtime)
 ```
 
@@ -102,23 +105,31 @@ const api = createTanstackQueryOptionsProxy(ApiClient, runtime)
 
 ```ts
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query'
+import { useSubscription } from '@tiesen/effect-tanstack-query/react'
 
 // Query Example
 const query = useQuery(
-  api.ApiGroup.hello.queryOptions({
+  api.group.hello.queryOptions({
     params: { name: 'John' },
     query: { greeting: 'Hi' },
   })
 )
 
 // Mutation Example
-const mutation = useMutation(api.ApiGroup.goodbye.mutationOptions())
+const mutation = useMutation(api.group.goodbye.mutationOptions())
 mutation.mutate({ name: 'John' })
+
+// Stream Example
+useSubscription(
+  api.group.stream.subscriptionOptions(undefined, {
+    onData: (data) => console.log('Received data:', data),
+  })
+)
 
 // Invalidate Query Example
 const queryClient = useQueryClient()
 void queryClient.invalidateQueries({
-  queryKey: api.ApiGroup.hello.getQueryKey(),
+  queryKey: api.group.hello.getQueryKey(),
 })
 ```
 
