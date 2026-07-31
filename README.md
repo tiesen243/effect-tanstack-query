@@ -98,7 +98,7 @@ class ApiClient extends Context.Service<
 }
 ```
 
-### 3. Use `effect-tanstack-query` to Generate Query and Mutation Options
+### 3. Create a TanStack Query Options Proxy
 
 ```ts
 import { ManagedRuntime } from 'effect'
