@@ -6,14 +6,15 @@
   <a href="https://npmx.dev/package/@tiesen/effect-tanstack-query"><img src="https://img.shields.io/npm/l/%40tiesen%2Feffect-tanstack-query" alt="License"></a>
 </p>
 
-A lightweight, type-safe bridge between **Effect HTTP API clients** and **TanStack Query** (`queryOptions`, `mutationOptions`, and `getQueryKey`).
+Effortlessly bridge **Effect HTTP API clients** with **TanStack Query**. Enjoy end-to-end type safety, zero-boilerplate options (`queryOptions`, `mutationOptions`, `subscriptionOptions`), and built-in streaming support out of the box.
 
 ## Features
 
 - **Seamless Integration**: Effortlessly map Effect `HttpApiClient` endpoints to TanStack Query config objects.
-- **End-to-End Type Safety**: Automatically infers inputs (`params`, `query`, `headers`, `payload`), success types, and error types directly from your Effect schemas.
-- **Zero Boilerplate**: Generates `queryKey` and execution functions under the hood using ES6 Proxies.
-- **Developer Friendly**: Smart optional parameters when no input arguments are required.
+- **End-to-End Type Safety**: Automatically infers inputs (`params`, `query`, `payload`), response types, and error types directly from your Effect schemas.
+- **Event Streaming Support**: Native handling for live streams and Server-Sent Events (SSE) via `subscriptionOptions` and `useSubscription`.
+- **Zero Boilerplate**: Generates `queryKey`, and execution logic under the hood using ES6 Proxies.
+- **Smart Developer Experience**: Auto-manages Fiber lifecycles and abort signals, with smart optional parameters when no inputs are required.
 
 ## Installation
 
@@ -21,16 +22,16 @@ Install using your preferred package manager:
 
 ```bash
 # Using npm
-npm install @tiesen/effect-tanstack-query
+npm install @tiesen/effect-tanstack-query @tanstack/react-query effect@beta
 
 # Using yarn
-yarn add @tiesen/effect-tanstack-query
+yarn add @tiesen/effect-tanstack-query @tanstack/react-query effect@beta
 
 # Using bun
-bun add @tiesen/effect-tanstack-query
+bun add @tiesen/effect-tanstack-query @tanstack/react-query effect@beta
 
 # Using pnpm
-pnpm add @tiesen/effect-tanstack-query
+pnpm add @tiesen/effect-tanstack-query @tanstack/react-query effect@beta
 ```
 
 ## Quick Start

@@ -2,7 +2,7 @@
   "name": "@tiesen/effect-tanstack-query",
   "version": "0.0.7",
   "private": false,
-  "description": "  A lightweight, type-safe bridge between Effect HTTP API clients and TanStack Query.",
+  "description": "Effortlessly bridge Effect HTTP API clients with TanStack Query. Enjoy end-to-end type safety, zero-boilerplate options, and built-in streaming support out of the box.",
   "keywords": [
     "effect",
     "effect-ts",
