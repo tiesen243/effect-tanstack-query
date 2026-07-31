@@ -1,3 +1,10 @@
+## @tiesen/effect-tanstack-query@0.0.8
+
+### Documentation Updates
+
+- Updated package description and README features to highlight first-class event streaming support (`subscriptionOptions` and `useSubscription`).
+- Added code examples and usage guidelines for stream subscriptions.
+
 ## @tiesen/effect-tanstack-query@0.0.7
 
 ### Features

@@ -1,10 +1,10 @@
 core:changelogs:
-  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Features\n\n- **stream**: Add support for event streaming / subscriptions via `subscriptionOptions`.\n- **hooks**: Introduce `useSubscription` hook to easily bind Effect-backed event streams directly to React components.\n- Auto-handles `AbortSignal` listeners and fiber interruption on unsubscribe.\n"
-    filename: 2026-07-31-ms8thv7i.md
+  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Documentation Updates\n\n- Updated package description and README features to highlight first-class event streaming support (`subscriptionOptions` and `useSubscription`).\n- Added code examples and usage guidelines for stream subscriptions.\n"
+    filename: 2026-07-31-ms8um9xz.md
     v: 0.0.0
 core:packages:
   - changelogIds:
-      - 2026-07-31-ms8thv7i.md
+      - 2026-07-31-ms8um9xz.md
     id: npm:@tiesen/effect-tanstack-query
     updated: true
 npm:packages:
