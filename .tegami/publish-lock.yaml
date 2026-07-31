@@ -1,10 +1,10 @@
 core:changelogs:
-  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Documentation Updates\n\n- Updated package description and README features to highlight first-class event streaming support (`subscriptionOptions` and `useSubscription`).\n- Added code examples and usage guidelines for stream subscriptions.\n"
-    filename: 2026-07-31-ms8um9xz.md
+  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n### Refactor & Improvements\n\n- **Shared Stream Processing**: Implemented `Stream.share({ capacity: 'unbounded' })` to split the SSE stream into two parallel branches (`keepAliveStream` and `dataStream`) without re-subscribing to or re-consuming the HTTP body.\n- **Keep-Alive Timeout Handling**: Added an automatic disconnection and reconnection mechanism using `Stream.timeout(keepAliveTimeout)` if no `:keep-alive` ping is received from the server within the specified window.\n- **Robust Reconnection Loop**: Encapsulated the stream execution within an `Effect.gen` runner that explicitly yields `Effect.fail('restart')` upon completion, triggering automatic **retries** with exponential backoff (`Schedule.exponential('3 seconds')`).\n- **Graceful Error Catching**: Explicitly handled `HttpClientError`, ignoring harmless `DecodeError` exceptions while properly delegating other HTTP errors to the `onError` callback.\n- **Enhanced Abort Signal Lifecycle**: Improved integration with `AbortSignal` to guarantee clean fiber cancellation (`Fiber.interrupt`) whenever a subscription is unsubscribed or aborted.\n"
+    filename: 2026-07-31-ms924ofx.md
     v: 0.0.0
 core:packages:
   - changelogIds:
-      - 2026-07-31-ms8um9xz.md
+      - 2026-07-31-ms924ofx.md
     id: npm:@tiesen/effect-tanstack-query
     updated: true
 npm:packages:
