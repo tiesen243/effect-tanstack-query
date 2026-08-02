@@ -1,3 +1,10 @@
+## @tiesen/effect-tanstack-query@0.0.11
+
+### Fix type inference for routes configured with middleware
+
+- Corrected function parameter signature count and optional request handling when an endpoint includes middleware (e.g., `AuthMiddleware`).
+- Resolved TypeScript compilation errors where routes requiring middleware failed to infer parameter options properly.
+
 ## @tiesen/effect-tanstack-query@0.0.10
 
 ### Make react optional peerDependency

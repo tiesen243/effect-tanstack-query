@@ -1,6 +1,6 @@
 {
   "name": "@tiesen/effect-tanstack-query",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "private": false,
   "description": "Effortlessly bridge Effect HTTP API clients with TanStack Query. Enjoy end-to-end type safety, zero-boilerplate options, and built-in streaming support out of the box.",
   "keywords": [
