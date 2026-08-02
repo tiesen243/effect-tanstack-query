@@ -24,7 +24,8 @@ export type TanstackQueryOptionsProxy<T> =
       infer Payload,
       infer Headers,
       infer Success,
-      infer Error
+      infer Error,
+      infer _Middleware
     >,
     infer _Error,
     infer _Requires
