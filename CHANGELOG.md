@@ -1,3 +1,7 @@
+## @tiesen/effect-tanstack-query@0.0.12
+
+### Fix TS4023 error
+
 ## @tiesen/effect-tanstack-query@0.0.11
 
 ### Fix type inference for routes configured with middleware
