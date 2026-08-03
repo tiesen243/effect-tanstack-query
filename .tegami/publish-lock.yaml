@@ -1,10 +1,10 @@
 core:changelogs:
-  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Fix type inference for routes configured with middleware\n\n- Corrected function parameter signature count and optional request handling when an endpoint includes middleware (e.g., `AuthMiddleware`).\n- Resolved TypeScript compilation errors where routes requiring middleware failed to infer parameter options properly.\n"
-    filename: 2026-08-02-msb21h02.md
+  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Fix TS4023 error\n"
+    filename: 2026-08-04-msdky0d3.md
     v: 0.0.0
 core:packages:
   - changelogIds:
-      - 2026-08-02-msb21h02.md
+      - 2026-08-04-msdky0d3.md
     id: npm:@tiesen/effect-tanstack-query
     updated: true
 npm:packages:
