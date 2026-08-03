@@ -81,6 +81,7 @@ export default defineConfig({
     'unicorn/prefer-global-this': 'off',
     'unicorn/prefer-string-raw': 'off',
     'unicorn/prefer-top-level-await': 'off',
+    'unicorn/switch-case-braces': 'off',
 
     'typescript/explicit-function-return-type': 'off',
     'typescript/explicit-module-boundary-types': 'off',

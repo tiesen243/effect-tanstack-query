@@ -1,3 +1,5 @@
+// oxlint-disable no-underscore-dangle
+
 import type { MutationOptions } from '@tanstack/query-core'
 import type { Service } from 'effect/Context'
 import type { ManagedRuntime } from 'effect/ManagedRuntime'
@@ -139,22 +141,30 @@ export function createTanstackQueryOptionsProxy<TServiceTag, TService>(
               mutationFn: (payload) => execute({ payload }),
             } satisfies MutationOptions
 
-          if (action === 'subscriptionOptions') {
-            const {
-              onData,
-              onError,
-              keepAliveTimeout = '10 seconds',
-            } = options as SubscriptionOptions<unknown, unknown>
-
+          if (action === 'subscriptionOptions')
             return {
               ...options,
+              enabled: options?.enabled ?? true,
               subcriptionKey: createKey('subscription', input),
-              subscriptionFn: ({ signal } = {}) => {
-                const handler = Effect.gen(function* handlerGen() {
+              subscriptionFn: ({ autoReconnect, keepAlive, ...events }) => {
+                const { onStarted, onData, onError, onConnectionChange } =
+                  events
+
+                const schedulePolicy = Schedule.max([
+                  Schedule.exponential(autoReconnect ?? 0),
+                  Schedule.spaced('30 seconds'),
+                  Schedule.recurs(3),
+                ]).pipe(Schedule.jittered)
+
+                const baseHandler = Effect.gen(function* handlerGen() {
+                  onConnectionChange?.({ status: 'connecting' })
+                  onStarted?.()
+
                   const response = yield* program({
                     ...input,
                     responseMode: 'response-only',
                   }) as Effect.Effect<HttpClientResponse>
+                  onConnectionChange?.({ status: 'pending' })
 
                   const source = yield* response.stream.pipe(
                     Stream.decodeText,
@@ -164,51 +174,52 @@ export function createTanstackQueryOptionsProxy<TServiceTag, TService>(
                   )
 
                   const keepAliveStream = source.pipe(
-                    Stream.filter((data) => data.startsWith(':keep-alive')),
-                    Stream.timeout(keepAliveTimeout),
-                    Stream.tapError(() =>
-                      Effect.logError('Keep-alive timeout, reconnecting...')
-                    )
+                    Stream.filter((data) =>
+                      data.startsWith(keepAlive?.message ?? ':keep-alive')
+                    ),
+                    Stream.timeout(keepAlive?.timeout ?? '10 seconds')
                   )
 
                   const dataStream = yield* source.pipe(
                     Stream.filter((line) => line.startsWith('data:')),
                     Stream.map((line) => line.slice(5).trim()),
                     Stream.filter((data) => data.length > 0),
-                    Stream.tap((data) => Effect.sync(() => onData(data))),
+                    Stream.tap((data) => Effect.sync(() => onData?.(data))),
                     Stream.share({ capacity: 'unbounded' })
                   )
 
                   const stream = Stream.merge(keepAliveStream, dataStream)
                   yield* Stream.runDrain(stream)
-                  yield* Effect.fail('restart')
-                }).pipe(
-                  Effect.catchTag('HttpClientError', (cause) => {
-                    // oxlint-disable-next-line no-underscore-dangle
-                    if (cause.reason._tag === 'DecodeError') return Effect.void
 
-                    if (onError) onError(cause)
-                    return Effect.fail(cause)
-                  }),
-                  Effect.scoped,
-                  Effect.retry(Schedule.exponential('3 seconds'))
+                  if (autoReconnect) yield* Effect.fail('restart')
+                }).pipe(
+                  Effect.tapError((cause) => {
+                    const isRetryable =
+                      cause === 'restart' ||
+                      (typeof cause === 'object' &&
+                        cause._tag === 'HttpClientError' &&
+                        cause.reason?._tag === 'DecodeError')
+
+                    if (isRetryable) return Effect.void
+                    return Effect.sync(() => onError?.(cause))
+                  })
                 )
 
-                const fiber = runtime.runFork(handler)
-                const unsubscribe = () => Fiber.interrupt(fiber)
+                const handlerWithReconnect = autoReconnect
+                  ? baseHandler.pipe(Effect.retry(schedulePolicy))
+                  : baseHandler
 
-                if (signal) {
-                  if (signal.aborted) unsubscribe()
-                  else
-                    signal.addEventListener('abort', unsubscribe, {
-                      once: true,
-                    })
-                }
+                const handlerWithInterrupt = handlerWithReconnect.pipe(
+                  Effect.ensuring(
+                    Effect.sync(() => onConnectionChange?.({ status: 'idle' }))
+                  ),
+                  Effect.scoped
+                )
 
-                return unsubscribe
+                const fiber = runtime.runFork(handlerWithInterrupt)
+                return () => runtime.runPromise(Fiber.interrupt(fiber))
               },
             } satisfies SubscriptionOptions<unknown, unknown>
-          }
         },
       }
     )
