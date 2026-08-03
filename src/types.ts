@@ -1,5 +1,3 @@
-// oxlint-disable typescript/no-empty-object-type typescript/ban-types
-
 import type {
   MutationOptions,
   DefaultError,
@@ -7,6 +5,7 @@ import type {
   QueryObserverOptions,
 } from '@tanstack/query-core'
 import type { Input } from 'effect/Duration'
+import type { NodeInspectSymbol } from 'effect/Inspectable'
 import type { Schema } from 'effect/Schema'
 import type { Client } from 'effect/unstable/httpapi/HttpApiClient'
 import type { HttpApiEndpoint } from 'effect/unstable/httpapi/HttpApiEndpoint'
@@ -37,13 +36,13 @@ export type TanstackQueryOptionsProxy<T> =
           ? <TQuery = QueryOptions<UnwrapCodec<Success>, UnwrapCodec<Error>>>(
               input: MakeOptionalInput<
                 ([Params] extends [never]
-                  ? {}
+                  ? unknown
                   : { params: UnwrapCodec<Params> }) &
                   ([Query] extends [never]
-                    ? {}
+                    ? unknown
                     : { query: UnwrapCodec<Query> }) &
                   ([Headers] extends [never]
-                    ? {}
+                    ? unknown
                     : { headers: UnwrapCodec<Headers> })
               >,
               options?: Omit<TQuery, 'queryKey' | 'queryFn'>
@@ -58,13 +57,13 @@ export type TanstackQueryOptionsProxy<T> =
           ? (
               input: MakeOptionalInput<
                 ([Params] extends [never]
-                  ? {}
+                  ? unknown
                   : { params: UnwrapCodec<Params> }) &
                   ([Query] extends [never]
-                    ? {}
+                    ? unknown
                     : { query: UnwrapCodec<Query> }) &
                   ([Headers] extends [never]
-                    ? {}
+                    ? unknown
                     : { headers: UnwrapCodec<Headers> })
               >,
               options?: {
@@ -88,10 +87,10 @@ export type TanstackQueryOptionsProxy<T> =
             >(
               input: MakeOptionalInput<
                 ([Params] extends [never]
-                  ? {}
+                  ? unknown
                   : { params: UnwrapCodec<Params> }) &
                   ([Headers] extends [never]
-                    ? {}
+                    ? unknown
                     : { headers: UnwrapCodec<Headers> })
               >,
               options?: Omit<TMutation, 'mutationKey' | 'mutationFn'>
@@ -102,13 +101,13 @@ export type TanstackQueryOptionsProxy<T> =
               input?: Partial<
                 MakeOptionalInput<
                   ([Params] extends [never]
-                    ? {}
+                    ? unknown
                     : { params: UnwrapCodec<Params> }) &
                     ([Query] extends [never]
-                      ? {}
+                      ? unknown
                       : { query: UnwrapCodec<Query> }) &
                     ([Headers] extends [never]
-                      ? {}
+                      ? unknown
                       : { headers: UnwrapCodec<Headers> })
                 >
               >
@@ -117,7 +116,11 @@ export type TanstackQueryOptionsProxy<T> =
       }
     : T extends object
       ? {
-          readonly [K in keyof T]: TanstackQueryOptionsProxy<T[K]>
+          readonly [K in keyof T as K extends typeof NodeInspectSymbol
+            ? never
+            : K extends symbol
+              ? never
+              : K]: TanstackQueryOptionsProxy<T[K]>
         }
       : T
 

@@ -19,3 +19,8 @@ class ApiClient extends Context.Service<
 
 const runtime = ManagedRuntime.make(ApiClient.live)
 export const api = createTanstackQueryOptionsProxy(ApiClient, runtime)
+
+api.group.hello.queryOptions({
+  params: { name: 'World' },
+  query: { greeting: 'Hello' },
+})
