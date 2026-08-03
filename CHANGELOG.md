@@ -1,3 +1,10 @@
+## @tiesen/effect-tanstack-query@0.0.13
+
+### Fix TS4023: Unnamable internal Effect symbols error
+
+- Omit `NodeInspectSymbol` and internal Effect symbols from `TanstackQueryOptionsProxy` mapped types to prevent downstream build errors (`TS4023`).
+- Export `NodeInspectSymbol` as an internal type utility to support declaration (`.d.ts`) generation in consumer projects.
+
 ## @tiesen/effect-tanstack-query@0.0.12
 
 ### Fix TS4023 error

@@ -1,10 +1,10 @@
 core:changelogs:
-  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Fix TS4023 error\n"
-    filename: 2026-08-04-msdky0d3.md
+  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Fix TS4023: Unnamable internal Effect symbols error\n\n- Omit `NodeInspectSymbol` and internal Effect symbols from `TanstackQueryOptionsProxy` mapped types to prevent downstream build errors (`TS4023`).\n- Export `NodeInspectSymbol` as an internal type utility to support declaration (`.d.ts`) generation in consumer projects.\n"
+    filename: 2026-08-04-msdlbvd8.md
     v: 0.0.0
 core:packages:
   - changelogIds:
-      - 2026-08-04-msdky0d3.md
+      - 2026-08-04-msdlbvd8.md
     id: npm:@tiesen/effect-tanstack-query
     updated: true
 npm:packages:
