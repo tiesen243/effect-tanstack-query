@@ -1,3 +1,9 @@
+## @tiesen/effect-tanstack-query@0.0.14
+
+### Updates & Improvements
+
+- **Refactored `useSubscription`**: Updated the subscription hook to utilize `subscriptionOptions`, providing better type inference, unified option configuration, and seamless integration with TanStack Query primitives.
+
 ## @tiesen/effect-tanstack-query@0.0.13
 
 ### Fix TS4023: Unnamable internal Effect symbols error
