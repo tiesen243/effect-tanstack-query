@@ -2,8 +2,10 @@
 
 import type {
   MutationOptions,
-  DefinedInitialDataOptions,
-} from '@tanstack/react-query'
+  DefaultError,
+  QueryKey,
+  QueryObserverOptions,
+} from '@tanstack/query-core'
 import type { Input } from 'effect/Duration'
 import type { Schema } from 'effect/Schema'
 import type { Client } from 'effect/unstable/httpapi/HttpApiClient'
@@ -32,12 +34,7 @@ export type TanstackQueryOptionsProxy<T> =
   >
     ? {
         queryOptions: Method extends 'GET'
-          ? <
-              TQuery = DefinedInitialDataOptions<
-                UnwrapCodec<Success>,
-                UnwrapCodec<Error>
-              >,
-            >(
+          ? <TQuery = QueryOptions<UnwrapCodec<Success>, UnwrapCodec<Error>>>(
               input: MakeOptionalInput<
                 ([Params] extends [never]
                   ? {}
@@ -133,6 +130,21 @@ export interface SubscriptionOptions<TData, TError> {
   onData: (data: TData) => void
   onError?: (error: TError) => void
   keepAliveTimeout?: Input
+}
+
+export type QueryOptions<
+  TQueryFnData = unknown,
+  TError = DefaultError,
+  TData = TQueryFnData,
+  TQueryKey extends QueryKey = QueryKey,
+> = QueryObserverOptions<
+  TQueryFnData,
+  TError,
+  TData,
+  TQueryFnData,
+  TQueryKey
+> & {
+  subscribed?: boolean
 }
 
 export interface SubscriptionReturns {
