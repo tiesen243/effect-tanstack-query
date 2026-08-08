@@ -1,3 +1,10 @@
+## @tiesen/effect-tanstack-query@0.0.15
+
+### Vue 3 Support
+
+- Added Vue 3 support for `useSubscription`.
+- Automatically handles reactivity and subscription lifecycles using Vue Composition API.
+
 ## @tiesen/effect-tanstack-query@0.0.14
 
 ### Updates & Improvements
