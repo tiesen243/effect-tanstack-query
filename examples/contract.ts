@@ -1,17 +1,14 @@
 // oxlint-disable max-classes-per-file
 
-import { Schema } from 'effect'
-import {
-  HttpApi,
-  HttpApiEndpoint,
-  HttpApiGroup,
-  HttpApiSchema,
-} from 'effect/unstable/httpapi'
+import * as Schema from 'effect/Schema'
+import * as HttpApi from 'effect/unstable/httpapi/HttpApi'
+import * as HttpApiEndpoint from 'effect/unstable/httpapi/HttpApiEndpoint'
+import * as HttpApiGroup from 'effect/unstable/httpapi/HttpApiGroup'
+import * as HttpApiSchema from 'effect/unstable/httpapi/HttpApiSchema'
 
 class ApiGroup extends HttpApiGroup.make('group')
   .add(
     HttpApiEndpoint.get('hello', '/hello/:name', {
-      success: Schema.String,
       params: Schema.Struct({
         name: Schema.String,
       }),
@@ -19,6 +16,7 @@ class ApiGroup extends HttpApiGroup.make('group')
         // oxlint-disable-next-line unicorn/max-nested-calls
         greeting: Schema.String.pipe(Schema.optionalKey),
       }),
+      success: Schema.String,
     })
   )
   .add(

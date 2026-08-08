@@ -1,6 +1,8 @@
-import { Context, Layer, ManagedRuntime } from 'effect'
-import { FetchHttpClient } from 'effect/unstable/http'
-import { HttpApiClient } from 'effect/unstable/httpapi'
+import * as Context from 'effect/Context'
+import * as Layer from 'effect/Layer'
+import * as ManagedRuntime from 'effect/ManagedRuntime'
+import * as FetchHttpClient from 'effect/unstable/http/FetchHttpClient'
+import * as HttpApiClient from 'effect/unstable/httpapi/HttpApiClient'
 
 import { createTanstackQueryOptionsProxy } from '../dist/index.mjs'
 import { Api } from './contract'

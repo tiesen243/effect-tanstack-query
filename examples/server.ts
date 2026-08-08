@@ -1,10 +1,11 @@
-import { Effect, Layer, Schedule, Stream } from 'effect'
-import {
-  HttpRouter,
-  HttpServer,
-  HttpServerResponse,
-} from 'effect/unstable/http'
-import { HttpApiBuilder } from 'effect/unstable/httpapi'
+import * as Effect from 'effect/Effect'
+import * as Layer from 'effect/Layer'
+import * as Schedule from 'effect/Schedule'
+import * as Stream from 'effect/Stream'
+import * as HttpRouter from 'effect/unstable/http/HttpRouter'
+import * as HttpServer from 'effect/unstable/http/HttpServer'
+import * as HttpServerResponse from 'effect/unstable/http/HttpServerResponse'
+import * as HttpApiBuilder from 'effect/unstable/httpapi/HttpApiBuilder'
 
 import { Api } from './contract'
 

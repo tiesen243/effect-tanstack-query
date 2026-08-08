@@ -1,7 +1,7 @@
-diff --git a/dist/npm-BIHQ7qby.js b/dist/npm-BIHQ7qby.js
-index 4310df1d0f41e01ab2a0397d1c95a22d8e80d7cc..50baff1a3ee035b878f0f9551bc1906216f95fb3 100644
---- a/dist/npm-BIHQ7qby.js
-+++ b/dist/npm-BIHQ7qby.js
+diff --git a/dist/npm-BrMZZcQU.js b/dist/npm-BrMZZcQU.js
+index 90fafdb214167840da88b64c3f3a5ecd0f26df4c..02051cf82e191a7016adce5541bcc45203971249 100644
+--- a/dist/npm-BrMZZcQU.js
++++ b/dist/npm-BrMZZcQU.js
 @@ -1323,7 +1323,7 @@ async function publish(client, pkg, distTag) {
  		if (packResult.exitCode !== 0) throw execFailure(`Failed to pack ${pkg.name}@${pkg.version}.`, packResult);
  		const publishArgs = ["publish", tarballPath];
