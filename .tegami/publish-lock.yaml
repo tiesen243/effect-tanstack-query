@@ -1,10 +1,10 @@
 core:changelogs:
-  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Updates & Improvements\n\n- **Refactored `useSubscription`**: Updated the subscription hook to utilize `subscriptionOptions`, providing better type inference, unified option configuration, and seamless integration with TanStack Query primitives.\n"
-    filename: 2026-08-04-msdw2por.md
+  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Vue 3 Support\n\n- Added Vue 3 support for `useSubscription`.\n- Automatically handles reactivity and subscription lifecycles using Vue Composition API.\n"
+    filename: 2026-08-08-msjp74ef.md
     v: 0.0.0
 core:packages:
   - changelogIds:
-      - 2026-08-04-msdw2por.md
+      - 2026-08-08-msjp74ef.md
     id: npm:@tiesen/effect-tanstack-query
     updated: true
 npm:packages:
