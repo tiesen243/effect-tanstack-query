@@ -29,7 +29,7 @@ const ApiGroupLive = HttpApiBuilder.group(Api, 'group', (handlers) =>
 
         const dataStream = Stream.repeat(
           Stream.succeed(`data: ${new Date().toISOString()}\n\n`),
-          Schedule.spaced('5 second')
+          Schedule.spaced('1 second')
         )
 
         const stream = Stream.merge(keepAliveStream, dataStream).pipe(

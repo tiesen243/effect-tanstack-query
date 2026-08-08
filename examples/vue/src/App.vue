@@ -12,7 +12,7 @@ const { data } = useQuery(
     query: {
       greeting: 'Hello',
     },
-  })
+  }) as never
 )
 
 useSubscription(
