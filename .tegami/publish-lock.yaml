@@ -1,10 +1,10 @@
 core:changelogs:
-  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Vue 3 Support\n\n- Added Vue 3 support for `useSubscription`.\n- Automatically handles reactivity and subscription lifecycles using Vue Composition API.\n"
-    filename: 2026-08-08-msjp74ef.md
+  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Fix mutation payload error\n\n- add missing required fields to mutation payload\n"
+    filename: 2026-08-10-msm4d507.md
     v: 0.0.0
 core:packages:
   - changelogIds:
-      - 2026-08-08-msjp74ef.md
+      - 2026-08-10-msm4d507.md
     id: npm:@tiesen/effect-tanstack-query
     updated: true
 npm:packages:
