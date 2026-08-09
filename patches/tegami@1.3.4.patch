@@ -1,8 +1,8 @@
-diff --git a/dist/npm-BrMZZcQU.js b/dist/npm-BrMZZcQU.js
-index 90fafdb214167840da88b64c3f3a5ecd0f26df4c..02051cf82e191a7016adce5541bcc45203971249 100644
---- a/dist/npm-BrMZZcQU.js
-+++ b/dist/npm-BrMZZcQU.js
-@@ -1323,7 +1323,7 @@ async function publish(client, pkg, distTag) {
+diff --git a/dist/npm-CNmNicp2.js b/dist/npm-CNmNicp2.js
+index 6d6e8df4910182c620d5b8727cc387efba64f535..4cf1b07517f1a218342ee2fc0ce656ded67ec29a 100644
+--- a/dist/npm-CNmNicp2.js
++++ b/dist/npm-CNmNicp2.js
+@@ -1298,7 +1298,7 @@ async function publish(client, pkg, distTag) {
  		if (packResult.exitCode !== 0) throw execFailure(`Failed to pack ${pkg.name}@${pkg.version}.`, packResult);
  		const publishArgs = ["publish", tarballPath];
  		if (distTag) publishArgs.push("--tag", distTag);

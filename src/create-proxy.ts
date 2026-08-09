@@ -138,7 +138,7 @@ export function createTanstackQueryOptionsProxy<TServiceTag, TService>(
             return {
               ...options,
               mutationKey: createKey('mutation', input),
-              mutationFn: (payload) => execute({ payload }),
+              mutationFn: (payload) => execute({ ...input, payload }),
             } satisfies MutationOptions
 
           if (action === 'subscriptionOptions')
