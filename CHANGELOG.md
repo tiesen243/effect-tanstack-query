@@ -1,3 +1,9 @@
+## @tiesen/effect-tanstack-query@0.0.16
+
+### Fix mutation payload error
+
+- add missing required fields to mutation payload
+
 ## @tiesen/effect-tanstack-query@0.0.15
 
 ### Vue 3 Support
