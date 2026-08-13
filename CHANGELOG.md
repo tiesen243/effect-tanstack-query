@@ -1,3 +1,10 @@
+## @tiesen/effect-tanstack-query@0.0.17
+
+### Enhance SSE data streaming:
+
+- Automatically attempt to parse incoming `data:` payloads as JSON.
+- Gracefully fall back to raw string content if JSON parsing fails.
+
 ## @tiesen/effect-tanstack-query@0.0.16
 
 ### Fix mutation payload error
