@@ -1,7 +1,7 @@
-diff --git a/dist/npm-CNmNicp2.js b/dist/npm-CNmNicp2.js
-index 6d6e8df4910182c620d5b8727cc387efba64f535..4cf1b07517f1a218342ee2fc0ce656ded67ec29a 100644
---- a/dist/npm-CNmNicp2.js
-+++ b/dist/npm-CNmNicp2.js
+diff --git a/dist/npm-e_qyiAtm.js b/dist/npm-e_qyiAtm.js
+index c460719fcbbc9ebd5750a4d6aeccb561007e19ab..4ecd9cf59df8a0bc81170ba213fb61f3d2d50dea 100644
+--- a/dist/npm-e_qyiAtm.js
++++ b/dist/npm-e_qyiAtm.js
 @@ -1298,7 +1298,7 @@ async function publish(client, pkg, distTag) {
  		if (packResult.exitCode !== 0) throw execFailure(`Failed to pack ${pkg.name}@${pkg.version}.`, packResult);
  		const publishArgs = ["publish", tarballPath];
