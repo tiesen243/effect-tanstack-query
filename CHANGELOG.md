@@ -1,3 +1,7 @@
+## @tiesen/effect-tanstack-query@0.0.18
+
+### Fix type error
+
 ## @tiesen/effect-tanstack-query@0.0.17
 
 ### Enhance SSE data streaming:
