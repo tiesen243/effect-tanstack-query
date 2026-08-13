@@ -184,6 +184,12 @@ export function createTanstackQueryOptionsProxy<TServiceTag, TService>(
                     Stream.filter((line) => line.startsWith('data:')),
                     Stream.map((line) => line.slice(5).trim()),
                     Stream.filter((data) => data.length > 0),
+                    Stream.mapEffect((data) =>
+                      Effect.orElseSucceed(
+                        Effect.try(() => JSON.parse(data)),
+                        () => data
+                      )
+                    ),
                     Stream.tap((data) => Effect.sync(() => onData?.(data))),
                     Stream.share({ capacity: 'unbounded' })
                   )
