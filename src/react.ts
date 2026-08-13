@@ -27,12 +27,12 @@
 import { hashKey } from '@tanstack/query-core'
 import * as React from 'react'
 
-import type { SubscriptionOptions, SubscriptionReturns } from './types'
+import type { SubscriptionOptions, UseSubscriptionReturns } from './types'
 
 function useSubscription<TData, TError>(
   opts: SubscriptionOptions<TData, TError>
-): SubscriptionReturns<TData, TError> {
-  type $Result = SubscriptionReturns<TData, TError>
+): UseSubscriptionReturns<TData, TError> {
+  type $Result = UseSubscriptionReturns<TData, TError>
 
   const optsRef = React.useRef(opts)
   optsRef.current = opts
@@ -132,7 +132,10 @@ function useSubscription<TData, TError>(
   return state
 }
 
-export type { SubscriptionOptions, SubscriptionReturns } from './types'
+export type {
+  SubscriptionOptions,
+  UseSubscriptionReturns as SubscriptionReturns,
+} from './types'
 export { useSubscription }
 
 function trackResult<T extends object>(

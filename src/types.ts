@@ -119,9 +119,9 @@ export type TanstackQueryOptionsProxy<T> =
       }
     : T extends object
       ? {
-          readonly [K in keyof T as K extends symbol
-            ? never
-            : K]: TanstackQueryOptionsProxy<T[K]>
+          readonly [
+            K in keyof T as K extends symbol ? never : K
+          ]: TanstackQueryOptionsProxy<T[K]>
         }
       : T
 
@@ -183,7 +183,7 @@ export interface SubscriptionOptions<TData, TError> {
    * Callback invoked when the connection's status changes
    */
   onConnectionChange?: (
-    result: Partial<SubscriptionReturns<TData, TError>>
+    result: Partial<UseSubscriptionReturns<TData, TError>>
   ) => void
 }
 
@@ -202,7 +202,7 @@ export type QueryOptions<
   subscribed?: boolean
 }
 
-export type SubscriptionReturns<TData, TError> = {
+export type UseSubscriptionReturns<TData, TError> = {
   reset: () => void
 } & (
   | { status: 'idle'; data: null; error: null }

@@ -29,12 +29,12 @@ import type { MaybeRefOrGetter } from 'vue'
 import { hashKey } from '@tanstack/query-core'
 import { reactive, watch, onUnmounted, toValue } from 'vue'
 
-import type { SubscriptionOptions, SubscriptionReturns } from './types'
+import type { SubscriptionOptions, UseSubscriptionReturns } from './types'
 
 function useSubscription<TData, TError>(
   optsInput: MaybeRefOrGetter<SubscriptionOptions<TData, TError>>
-): SubscriptionReturns<TData, TError> {
-  type $Result = SubscriptionReturns<TData, TError>
+): UseSubscriptionReturns<TData, TError> {
+  type $Result = UseSubscriptionReturns<TData, TError>
 
   const state = reactive<$Result>({
     data: null,
@@ -145,5 +145,8 @@ function useSubscription<TData, TError>(
   return state
 }
 
-export type { SubscriptionOptions, SubscriptionReturns } from './types'
+export type {
+  SubscriptionOptions,
+  UseSubscriptionReturns as SubscriptionReturns,
+} from './types'
 export { useSubscription }

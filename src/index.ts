@@ -1,2 +1,2 @@
-export type { TanstackQueryOptionsProxy } from './types'
+export type { TanstackQueryOptionsProxy, SubscriptionOptions } from './types'
 export { createTanstackQueryOptionsProxy } from './create-proxy'
