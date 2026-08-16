@@ -1,3 +1,10 @@
+## @tiesen/effect-tanstack-query@0.0.19
+
+### Add direct `query` and `mutate` support
+
+- Added the `query` method to allow executing `GET` endpoints directly.
+- Added the `mutate` method to support executing `non-GET` mutation endpoints directly.
+
 ## @tiesen/effect-tanstack-query@0.0.18
 
 ### Fix type error
