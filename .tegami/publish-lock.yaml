@@ -1,10 +1,10 @@
 core:changelogs:
-  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Add direct `query` and `mutate` support\n\n- Added the `query` method to allow executing `GET` endpoints directly.\n- Added the `mutate` method to support executing `non-GET` mutation endpoints directly.\n"
-    filename: 2026-08-16-msvkm335.md
+  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Add `queryEffect` and `mutateEffect` actions with runtime context support\n\n- Introduced `queryEffect` and `mutateEffect` handlers.\n- Integrated `runtime.cachedContext` via `Effect.provide` to automatically supply service dependencies for effectful queries and mutations.\n"
+    filename: 2026-08-16-msvljsj7.md
     v: 0.0.0
 core:packages:
   - changelogIds:
-      - 2026-08-16-msvkm335.md
+      - 2026-08-16-msvljsj7.md
     id: npm:@tiesen/effect-tanstack-query
     updated: true
 npm:packages:
