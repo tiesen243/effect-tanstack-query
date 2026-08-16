@@ -5,6 +5,7 @@ import type {
   QueryObserverOptions,
 } from '@tanstack/query-core'
 import type { Input } from 'effect/Duration'
+import type { Effect } from 'effect/Effect'
 import type { Schema } from 'effect/Schema'
 import type { Client } from 'effect/unstable/httpapi/HttpApiClient'
 import type { HttpApiEndpoint } from 'effect/unstable/httpapi/HttpApiEndpoint'
@@ -34,33 +35,19 @@ export type TanstackQueryOptionsProxy<T> =
     ? {
         query: Method extends 'GET'
           ? (
-              input: MakeOptionalInput<
-                ([Params] extends [never]
-                  ? unknown
-                  : { params: UnwrapCodec<Params> }) &
-                  ([Query] extends [never]
-                    ? unknown
-                    : { query: UnwrapCodec<Query> }) &
-                  ([Headers] extends [never]
-                    ? unknown
-                    : { headers: UnwrapCodec<Headers> })
-              >
+              input: MakeInput<Headers, Params, Query, never>
             ) => UnwrapCodec<Success> | Promise<UnwrapCodec<Success>>
+          : never
+
+        queryEffect: Method extends 'GET'
+          ? (
+              input: MakeInput<Headers, Params, Query, never>
+            ) => Effect<UnwrapCodec<Success>, UnwrapCodec<Error>>
           : never
 
         queryOptions: Method extends 'GET'
           ? <TQuery = QueryOptions<UnwrapCodec<Success>, UnwrapCodec<Error>>>(
-              input: MakeOptionalInput<
-                ([Params] extends [never]
-                  ? unknown
-                  : { params: UnwrapCodec<Params> }) &
-                  ([Query] extends [never]
-                    ? unknown
-                    : { query: UnwrapCodec<Query> }) &
-                  ([Headers] extends [never]
-                    ? unknown
-                    : { headers: UnwrapCodec<Headers> })
-              >,
+              input: MakeInput<Headers, Params, Query, never>,
               options?: Omit<TQuery, 'queryKey' | 'queryFn'>
             ) => TQuery
           : never
@@ -71,17 +58,7 @@ export type TanstackQueryOptionsProxy<T> =
           infer _StreamValue
         >
           ? (
-              input: MakeOptionalInput<
-                ([Params] extends [never]
-                  ? unknown
-                  : { params: UnwrapCodec<Params> }) &
-                  ([Query] extends [never]
-                    ? unknown
-                    : { query: UnwrapCodec<Query> }) &
-                  ([Headers] extends [never]
-                    ? unknown
-                    : { headers: UnwrapCodec<Headers> })
-              >,
+              input: MakeInput<Headers, Params, Query, never>,
               options?: Omit<
                 SubscriptionOptions<
                   UnwrapCodec<StreamSuccess>,
@@ -98,18 +75,14 @@ export type TanstackQueryOptionsProxy<T> =
         mutate: Method extends 'GET'
           ? never
           : (
-              input: MakeOptionalInput<
-                ([Params] extends [never]
-                  ? unknown
-                  : { params: UnwrapCodec<Params> }) &
-                  ([Headers] extends [never]
-                    ? unknown
-                    : { headers: UnwrapCodec<Headers> }) &
-                  ([Payload] extends [never]
-                    ? unknown
-                    : { payload: UnwrapCodec<Payload> })
-              >
+              input: MakeInput<Headers, Params, never, Payload>
             ) => UnwrapCodec<Success> | Promise<UnwrapCodec<Success>>
+
+        mutateEffect: Method extends 'GET'
+          ? never
+          : (
+              input: MakeInput<Headers, Params, never, Payload>
+            ) => Effect<UnwrapCodec<Success>, UnwrapCodec<Error>>
 
         mutationOptions: Method extends 'GET'
           ? never
@@ -120,32 +93,13 @@ export type TanstackQueryOptionsProxy<T> =
                 UnwrapCodec<Payload>
               >,
             >(
-              input: MakeOptionalInput<
-                ([Params] extends [never]
-                  ? unknown
-                  : { params: UnwrapCodec<Params> }) &
-                  ([Headers] extends [never]
-                    ? unknown
-                    : { headers: UnwrapCodec<Headers> })
-              >,
+              input: MakeInput<Headers, Params, never, never>,
               options?: Omit<TMutation, 'mutationKey' | 'mutationFn'>
             ) => TMutation
 
         getQueryKey: Method extends 'GET'
           ? (
-              input?: Partial<
-                MakeOptionalInput<
-                  ([Params] extends [never]
-                    ? unknown
-                    : { params: UnwrapCodec<Params> }) &
-                    ([Query] extends [never]
-                      ? unknown
-                      : { query: UnwrapCodec<Query> }) &
-                    ([Headers] extends [never]
-                      ? unknown
-                      : { headers: UnwrapCodec<Headers> })
-                >
-              >
+              input?: Partial<MakeInput<Headers, Params, Query, never>>
             ) => QueryKey
           : never
       }
@@ -252,3 +206,9 @@ type UnwrapCodec<T> =
 
 // oxlint-disable-next-line typescript/no-invalid-void-type
 type MakeOptionalInput<T> = keyof T extends never ? void | undefined : T
+type MakeInput<Headers, Params, Query, Payload> = MakeOptionalInput<
+  ([Headers] extends [never] ? unknown : { headers: UnwrapCodec<Headers> }) &
+    ([Params] extends [never] ? unknown : { params: UnwrapCodec<Params> }) &
+    ([Query] extends [never] ? unknown : { query: UnwrapCodec<Query> }) &
+    ([Payload] extends [never] ? unknown : { payload: UnwrapCodec<Payload> })
+>

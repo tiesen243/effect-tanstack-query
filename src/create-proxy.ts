@@ -126,6 +126,11 @@ export function createTanstackQueryOptionsProxy<TServiceTag, TService>(
           ]
 
           if (action === 'query' || action === 'mutate') return execute(input)
+          if (
+            (action === 'queryEffect' || action === 'mutateEffect') &&
+            runtime.cachedContext
+          )
+            return program(input).pipe(Effect.provide(runtime.cachedContext))
 
           if (action === 'queryOptions')
             return {

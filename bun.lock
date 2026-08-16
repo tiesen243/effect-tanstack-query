@@ -1,5 +1,6 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "@tiesen/effect-tanstack-query",
@@ -14,7 +15,7 @@
       },
       "peerDependencies": {
         "@tanstack/query-core": ">=5.100.0",
-        "effect": ">=4.0.0-rc.108 || >=4.0.0",
+        "effect": ">=4.0.0-rc.109",
         "react": ">=19.2.8",
         "vue": ">=3.5.40",
       },
