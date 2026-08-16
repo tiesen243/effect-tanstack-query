@@ -1,3 +1,10 @@
+## @tiesen/effect-tanstack-query@0.0.20
+
+### Add `queryEffect` and `mutateEffect` actions with runtime context support
+
+- Introduced `queryEffect` and `mutateEffect` handlers.
+- Integrated `runtime.cachedContext` via `Effect.provide` to automatically supply service dependencies for effectful queries and mutations.
+
 ## @tiesen/effect-tanstack-query@0.0.19
 
 ### Add direct `query` and `mutate` support
