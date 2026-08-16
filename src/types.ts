@@ -32,6 +32,22 @@ export type TanstackQueryOptionsProxy<T> =
     infer _Requires
   >
     ? {
+        query: Method extends 'GET'
+          ? (
+              input: MakeOptionalInput<
+                ([Params] extends [never]
+                  ? unknown
+                  : { params: UnwrapCodec<Params> }) &
+                  ([Query] extends [never]
+                    ? unknown
+                    : { query: UnwrapCodec<Query> }) &
+                  ([Headers] extends [never]
+                    ? unknown
+                    : { headers: UnwrapCodec<Headers> })
+              >
+            ) => UnwrapCodec<Success> | Promise<UnwrapCodec<Success>>
+          : never
+
         queryOptions: Method extends 'GET'
           ? <TQuery = QueryOptions<UnwrapCodec<Success>, UnwrapCodec<Error>>>(
               input: MakeOptionalInput<
@@ -78,6 +94,22 @@ export type TanstackQueryOptionsProxy<T> =
               UnwrapCodec<StreamError>
             >
           : never
+
+        mutate: Method extends 'GET'
+          ? never
+          : (
+              input: MakeOptionalInput<
+                ([Params] extends [never]
+                  ? unknown
+                  : { params: UnwrapCodec<Params> }) &
+                  ([Headers] extends [never]
+                    ? unknown
+                    : { headers: UnwrapCodec<Headers> }) &
+                  ([Payload] extends [never]
+                    ? unknown
+                    : { payload: UnwrapCodec<Payload> })
+              >
+            ) => UnwrapCodec<Success> | Promise<UnwrapCodec<Success>>
 
         mutationOptions: Method extends 'GET'
           ? never

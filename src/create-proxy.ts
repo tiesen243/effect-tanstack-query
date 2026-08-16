@@ -125,6 +125,8 @@ export function createTanstackQueryOptionsProxy<TServiceTag, TService>(
             ...(inp ? [inp] : []),
           ]
 
+          if (action === 'query' || action === 'mutate') return execute(input)
+
           if (action === 'queryOptions')
             return {
               ...options,

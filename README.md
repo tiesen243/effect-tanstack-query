@@ -138,6 +138,13 @@ const queryClient = useQueryClient()
 void queryClient.invalidateQueries({
   queryKey: api.group.hello.getQueryKey(),
 })
+
+// Call Query / Mutate Directly Example
+const result = await api.group.hello.query({
+  params: { name: 'John' },
+  query: { greeting: 'Hi' },
+})
+const result2 = await api.group.goodbye.mutate({ payload: { name: 'John' } })
 ```
 
 ## Downloads
