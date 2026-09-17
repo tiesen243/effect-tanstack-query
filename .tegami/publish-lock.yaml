@@ -1,10 +1,10 @@
 core:changelogs:
-  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Add `queryEffect` and `mutateEffect` actions with runtime context support\n\n- Introduced `queryEffect` and `mutateEffect` handlers.\n- Integrated `runtime.cachedContext` via `Effect.provide` to automatically supply service dependencies for effectful queries and mutations.\n"
-    filename: 2026-08-16-msvljsj7.md
+  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Bug Fixes\n\n- Strip never properties from query and mutation API types.\n- Improve TypeScript autocomplete for TanStack Query integrations.\n"
+    filename: 2026-09-17-mu4ugs23.md
     v: 0.0.0
 core:packages:
   - changelogIds:
-      - 2026-08-16-msvljsj7.md
+      - 2026-09-17-mu4ugs23.md
     id: npm:@tiesen/effect-tanstack-query
     updated: true
 npm:packages:

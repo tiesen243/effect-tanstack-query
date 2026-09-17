@@ -1,3 +1,10 @@
+## @tiesen/effect-tanstack-query@0.0.21
+
+### Bug Fixes
+
+- Strip never properties from query and mutation API types.
+- Improve TypeScript autocomplete for TanStack Query integrations.
+
 ## @tiesen/effect-tanstack-query@0.0.20
 
 ### Add `queryEffect` and `mutateEffect` actions with runtime context support
