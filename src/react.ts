@@ -107,6 +107,7 @@ function useSubscription<TData, TError>(
   const updateState = React.useCallback(
     (callbackFn: (prev: $Result) => $Result) => {
       const prev = resultRef.current
+      // oxlint-disable-next-line no-multi-assign
       const next = (resultRef.current = callbackFn(prev))
 
       let shouldUpdate = false

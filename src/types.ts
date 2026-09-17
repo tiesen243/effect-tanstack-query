@@ -14,7 +14,7 @@ import type {
   StreamSse,
 } from 'effect/unstable/httpapi/HttpApiSchema'
 
-export type TanstackQueryOptionsProxy<T> =
+type TanstackQueryOptionsProxyInternal<T> =
   T extends Client.Method<
     HttpApiEndpoint<
       infer _Identifier,
@@ -110,6 +110,19 @@ export type TanstackQueryOptionsProxy<T> =
           ]: TanstackQueryOptionsProxy<T[K]>
         }
       : T
+
+// oxlint-disable-next-line typescript/no-explicit-any
+type StripNever<T> = T extends (...args: any[]) => any
+  ? T
+  : T extends object
+    ? {
+        [K in keyof T as [T[K]] extends [never] ? never : K]: StripNever<T[K]>
+      }
+    : T
+
+export type TanstackQueryOptionsProxy<T> = StripNever<
+  TanstackQueryOptionsProxyInternal<T>
+>
 
 export interface SubscriptionOptions<TData, TError> {
   /**

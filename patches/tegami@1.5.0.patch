@@ -1,0 +1,13 @@
+diff --git a/dist/npm-CN6OT66I.js b/dist/npm-CN6OT66I.js
+index 4e6cc153e822952eee0a0aacb490f401acae7340..2cf0972bbb3a45f8e36ef7b8fd908f0f34904c31 100644
+--- a/dist/npm-CN6OT66I.js
++++ b/dist/npm-CN6OT66I.js
+@@ -1575,7 +1575,7 @@ async function runPublish(client, pkg, name, distTag) {
+ 		if (packResult.exitCode !== 0) throw execFailure(`Failed to pack ${name}@${pkg.version}.`, packResult);
+ 		const publishArgs = ["publish", tarballPath];
+ 		if (distTag) publishArgs.push("--tag", distTag);
+-		const publishResult = await x("npm", publishArgs, { nodeOptions: {
++		const publishResult = await x("bun", publishArgs, { nodeOptions: {
+ 			cwd: pkg.path,
+ 			...!isCI() && process.stdin.isTTY ? { stdio: "inherit" } : {}
+ 		} });
