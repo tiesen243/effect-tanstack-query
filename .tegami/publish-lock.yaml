@@ -1,10 +1,10 @@
 core:changelogs:
-  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Bug Fixes\n\n- Strip never properties from query and mutation API types.\n- Improve TypeScript autocomplete for TanStack Query integrations.\n"
-    filename: 2026-09-17-mu4ugs23.md
+  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Patch Changes\n\n- Bump effect to rc 118\n- Remove unstable flag of effect modules\n"
+    filename: 2026-09-28-mulagni9.md
     v: 0.0.0
 core:packages:
   - changelogIds:
-      - 2026-09-17-mu4ugs23.md
+      - 2026-09-28-mulagni9.md
     id: npm:@tiesen/effect-tanstack-query
     updated: true
 npm:packages:

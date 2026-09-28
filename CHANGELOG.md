@@ -1,3 +1,10 @@
+## @tiesen/effect-tanstack-query@0.0.22
+
+### Patch Changes
+
+- Bump effect to rc 118
+- Remove unstable flag of effect modules
+
 ## @tiesen/effect-tanstack-query@0.0.21
 
 ### Bug Fixes
