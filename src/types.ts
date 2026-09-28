@@ -6,13 +6,10 @@ import type {
 } from '@tanstack/query-core'
 import type { Input } from 'effect/Duration'
 import type { Effect } from 'effect/Effect'
+import type { Client } from 'effect/http-api/HttpApiClient'
+import type { HttpApiEndpoint } from 'effect/http-api/HttpApiEndpoint'
+import type { SseEventFromData, StreamSse } from 'effect/http-api/HttpApiSchema'
 import type { Schema } from 'effect/Schema'
-import type { Client } from 'effect/unstable/httpapi/HttpApiClient'
-import type { HttpApiEndpoint } from 'effect/unstable/httpapi/HttpApiEndpoint'
-import type {
-  SseEventFromData,
-  StreamSse,
-} from 'effect/unstable/httpapi/HttpApiSchema'
 
 type TanstackQueryOptionsProxyInternal<T> =
   T extends Client.Method<

@@ -2,8 +2,8 @@
 
 import type { MutationOptions } from '@tanstack/query-core'
 import type { Service } from 'effect/Context'
+import type { HttpClientResponse } from 'effect/http/HttpClientResponse'
 import type { ManagedRuntime } from 'effect/ManagedRuntime'
-import type { HttpClientResponse } from 'effect/unstable/http/HttpClientResponse'
 
 import * as Effect from 'effect/Effect'
 import * as Fiber from 'effect/Fiber'

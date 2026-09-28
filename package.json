@@ -61,17 +61,17 @@
   "devDependencies": {
     "@types/react": "^19.3.0",
     "@types/vue": "^2.0.0",
-    "oxfmt": "^0.68.0",
-    "oxlint": "^1.83.0",
+    "oxfmt": "^0.71.0",
+    "oxlint": "^1.86.0",
     "tegami": "^1.5.0",
     "tsdown": "^0.23.0",
     "typescript": "^7.0.2"
   },
   "peerDependencies": {
-    "@tanstack/query-core": ">=5.103.0",
-    "effect": ">=4.0.0-rc.115",
+    "@tanstack/query-core": ">=5.104.0",
+    "effect": ">=4.0.0-rc.118",
     "react": ">=19.0.0",
-    "vue": ">=3.0.0"
+    "vue": ">=3.5.43"
   },
   "peerDependenciesMeta": {
     "react": {
