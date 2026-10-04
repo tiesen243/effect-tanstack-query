@@ -1,10 +1,10 @@
 core:changelogs:
-  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Patch Changes\n\n- Bump effect to rc 118\n- Remove unstable flag of effect modules\n"
-    filename: 2026-09-28-mulagni9.md
+  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Patch Changes\n\n- bump effect version to v4 stable\n"
+    filename: 2026-10-05-muu54vbi.md
     v: 0.0.0
 core:packages:
   - changelogIds:
-      - 2026-09-28-mulagni9.md
+      - 2026-10-05-muu54vbi.md
     id: npm:@tiesen/effect-tanstack-query
     updated: true
 npm:packages:
