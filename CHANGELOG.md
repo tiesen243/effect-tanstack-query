@@ -1,3 +1,9 @@
+## @tiesen/effect-tanstack-query@0.0.23
+
+### Patch Changes
+
+- bump effect version to v4 stable
+
 ## @tiesen/effect-tanstack-query@0.0.22
 
 ### Patch Changes
