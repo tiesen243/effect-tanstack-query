@@ -1,3 +1,9 @@
+## @tiesen/effect-tanstack-query@0.0.25
+
+### Patch Changes
+
+- remove unused stuffs
+
 ## @tiesen/effect-tanstack-query@0.0.24
 
 ### Patch Chanages

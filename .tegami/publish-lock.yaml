@@ -1,10 +1,10 @@
 core:changelogs:
-  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Patch Chanages\n\n- fix vue types\n- update README\n"
-    filename: 2026-10-08-muzgs73k.md
+  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Patch Changes\n\n- remove unused stuffs\n"
+    filename: 2026-10-08-muzhf4ah.md
     v: 0.0.0
 core:packages:
   - changelogIds:
-      - 2026-10-08-muzgs73k.md
+      - 2026-10-08-muzhf4ah.md
     id: npm:@tiesen/effect-tanstack-query
     updated: true
 npm:packages:
