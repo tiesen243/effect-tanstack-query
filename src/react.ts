@@ -133,12 +133,6 @@ function useSubscription<TData, TError>(
   return state
 }
 
-export type {
-  SubscriptionOptions,
-  UseSubscriptionReturns as SubscriptionReturns,
-} from './types'
-export { useSubscription }
-
 function trackResult<T extends object>(
   result: React.RefObject<T>,
   onTrackResult: (key: keyof T) => void
@@ -153,3 +147,6 @@ function trackResult<T extends object>(
 
   return trackedResult
 }
+
+export type { SubscriptionOptions, UseSubscriptionReturns } from './types'
+export { useSubscription }

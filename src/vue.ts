@@ -145,8 +145,5 @@ function useSubscription<TData, TError>(
   return state
 }
 
-export type {
-  SubscriptionOptions,
-  UseSubscriptionReturns as SubscriptionReturns,
-} from './types'
+export type { SubscriptionOptions, UseSubscriptionReturns } from './types'
 export { useSubscription }

@@ -3,6 +3,7 @@ import type {
   QueryKey,
   DataTag,
   QueryFunction,
+  MutationKey,
 } from '@tanstack/query-core'
 import type { Input } from 'effect/Duration'
 import type { Effect } from 'effect/Effect'
@@ -10,29 +11,6 @@ import type { Client } from 'effect/http-api/HttpApiClient'
 import type { HttpApiEndpoint } from 'effect/http-api/HttpApiEndpoint'
 import type { SseEventFromData, StreamSse } from 'effect/http-api/HttpApiSchema'
 import type { Schema } from 'effect/Schema'
-
-type QueryOptionsResult<
-  TQueryFnData,
-  TError = DefaultError,
-  TQueryKey extends QueryKey = QueryKey,
-  // oxlint-disable-next-line typescript/ban-types typescript/no-empty-object-type
-  TOptions extends object = {},
-> = Omit<TOptions, 'queryKey' | 'queryFn'> & {
-  queryKey: DataTag<TQueryKey, TQueryFnData, TError>
-  queryFn: QueryFunction<TQueryFnData, TQueryKey>
-}
-
-type MutationOptionsResult<
-  TData,
-  TVariables,
-  // oxlint-disable-next-line no-unused-vars
-  TError = DefaultError,
-  // oxlint-disable-next-line typescript/ban-types typescript/no-empty-object-type
-  TOptions extends object = {},
-> = Omit<TOptions, 'mutationKey' | 'mutationFn'> & {
-  mutationKey: QueryKey
-  mutationFn: (variables: TVariables) => Promise<TData>
-}
 
 type TanstackQueryOptionsProxyInternal<T> =
   T extends Client.Method<
@@ -65,22 +43,16 @@ type TanstackQueryOptionsProxyInternal<T> =
             ) => Effect<UnwrapCodec<Success>, UnwrapCodec<Error>>
           : never
 
-        // queryOptions: Method extends 'GET'
-        //   ? <TQuery = QueryOptions<UnwrapCodec<Success>, UnwrapCodec<Error>>>(
-        //       input: MakeInput<Headers, Params, Query, never>,
-        //       options?: Omit<TQuery, 'queryKey' | 'queryFn'>
-        //     ) => TQuery
-        //   : never
         queryOptions: Method extends 'GET'
           ? {
               (
                 input: MakeInput<Headers, Params, Query, never>
-              ): QueryOptionsResult<UnwrapCodec<Success>, UnwrapCodec<Error>>
+              ): QueryOptions<UnwrapCodec<Success>, UnwrapCodec<Error>>
 
               <TOptions extends object>(
                 input: MakeInput<Headers, Params, Query, never>,
                 options: TOptions
-              ): QueryOptionsResult<
+              ): QueryOptions<
                 UnwrapCodec<Success>,
                 UnwrapCodec<Error>,
                 QueryKey,
@@ -121,24 +93,12 @@ type TanstackQueryOptionsProxyInternal<T> =
               input: MakeInput<Headers, Params, never, Payload>
             ) => Effect<UnwrapCodec<Success>, UnwrapCodec<Error>>
 
-        // mutationOptions: Method extends 'GET'
-        //   ? never
-        //   : <
-        //       TMutation = MutationOptions<
-        //         UnwrapCodec<Success>,
-        //         UnwrapCodec<Error>,
-        //         UnwrapCodec<Payload>
-        //       >,
-        //     >(
-        //       input: MakeInput<Headers, Params, never, never>,
-        //       options?: Omit<TMutation, 'mutationKey' | 'mutationFn'>
-        //     ) => TMutation
         mutationOptions: Method extends 'GET'
           ? never
           : {
               (
                 input: MakeInput<Headers, Params, never, never>
-              ): MutationOptionsResult<
+              ): MutationOptions<
                 UnwrapCodec<Success>,
                 UnwrapCodec<Payload>,
                 UnwrapCodec<Error>
@@ -147,7 +107,7 @@ type TanstackQueryOptionsProxyInternal<T> =
               <TOptions extends object>(
                 input: MakeInput<Headers, Params, never, never>,
                 options: TOptions
-              ): MutationOptionsResult<
+              ): MutationOptions<
                 UnwrapCodec<Success>,
                 UnwrapCodec<Payload>,
                 UnwrapCodec<Error>,
@@ -173,14 +133,34 @@ type TanstackQueryOptionsProxyInternal<T> =
 type StripNever<T> = T extends (...args: any[]) => any
   ? T
   : T extends object
-    ? {
-        [K in keyof T as [T[K]] extends [never] ? never : K]: StripNever<T[K]>
-      }
+    ? { [K in keyof T as [T[K]] extends [never] ? never : K]: StripNever<T[K]> }
     : T
 
 export type TanstackQueryOptionsProxy<T> = StripNever<
   TanstackQueryOptionsProxyInternal<T>
 >
+
+export type QueryOptions<
+  TQueryFnData,
+  TError = DefaultError,
+  TQueryKey extends QueryKey = QueryKey,
+  // oxlint-disable-next-line typescript/ban-types typescript/no-empty-object-type
+  TOptions extends object = {},
+> = Omit<TOptions, 'queryKey' | 'queryFn'> & {
+  queryKey: DataTag<TQueryKey, TQueryFnData, TError>
+  queryFn: QueryFunction<TQueryFnData, TQueryKey>
+}
+
+export type MutationOptions<
+  TData,
+  TVariables,
+  TError = DefaultError,
+  // oxlint-disable-next-line typescript/ban-types typescript/no-empty-object-type
+  TOptions extends object = {},
+> = Omit<TOptions, 'mutationKey' | 'mutationFn'> & {
+  mutationKey: DataTag<MutationKey, TData, TError>
+  mutationFn: (variables: TVariables) => Promise<TData>
+}
 
 export interface SubscriptionOptions<TData, TError> {
   /**
