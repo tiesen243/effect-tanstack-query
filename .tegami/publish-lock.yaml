@@ -1,10 +1,10 @@
 core:changelogs:
-  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Patch Changes\n\n- remove unused stuffs\n"
-    filename: 2026-10-08-muzhf4ah.md
+  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Bug Fixes\n\n- Missing type\n"
+    filename: 2026-10-09-muzx7lw0.md
     v: 0.0.0
 core:packages:
   - changelogIds:
-      - 2026-10-08-muzhf4ah.md
+      - 2026-10-09-muzx7lw0.md
     id: npm:@tiesen/effect-tanstack-query
     updated: true
 npm:packages:
