@@ -1,8 +1,8 @@
 import type {
-  MutationOptions,
   DefaultError,
   QueryKey,
-  QueryObserverOptions,
+  DataTag,
+  QueryFunction,
 } from '@tanstack/query-core'
 import type { Input } from 'effect/Duration'
 import type { Effect } from 'effect/Effect'
@@ -10,6 +10,29 @@ import type { Client } from 'effect/http-api/HttpApiClient'
 import type { HttpApiEndpoint } from 'effect/http-api/HttpApiEndpoint'
 import type { SseEventFromData, StreamSse } from 'effect/http-api/HttpApiSchema'
 import type { Schema } from 'effect/Schema'
+
+type QueryOptionsResult<
+  TQueryFnData,
+  TError = DefaultError,
+  TQueryKey extends QueryKey = QueryKey,
+  // oxlint-disable-next-line typescript/ban-types typescript/no-empty-object-type
+  TOptions extends object = {},
+> = Omit<TOptions, 'queryKey' | 'queryFn'> & {
+  queryKey: DataTag<TQueryKey, TQueryFnData, TError>
+  queryFn: QueryFunction<TQueryFnData, TQueryKey>
+}
+
+type MutationOptionsResult<
+  TData,
+  TVariables,
+  // oxlint-disable-next-line no-unused-vars
+  TError = DefaultError,
+  // oxlint-disable-next-line typescript/ban-types typescript/no-empty-object-type
+  TOptions extends object = {},
+> = Omit<TOptions, 'mutationKey' | 'mutationFn'> & {
+  mutationKey: QueryKey
+  mutationFn: (variables: TVariables) => Promise<TData>
+}
 
 type TanstackQueryOptionsProxyInternal<T> =
   T extends Client.Method<
@@ -42,11 +65,28 @@ type TanstackQueryOptionsProxyInternal<T> =
             ) => Effect<UnwrapCodec<Success>, UnwrapCodec<Error>>
           : never
 
+        // queryOptions: Method extends 'GET'
+        //   ? <TQuery = QueryOptions<UnwrapCodec<Success>, UnwrapCodec<Error>>>(
+        //       input: MakeInput<Headers, Params, Query, never>,
+        //       options?: Omit<TQuery, 'queryKey' | 'queryFn'>
+        //     ) => TQuery
+        //   : never
         queryOptions: Method extends 'GET'
-          ? <TQuery = QueryOptions<UnwrapCodec<Success>, UnwrapCodec<Error>>>(
-              input: MakeInput<Headers, Params, Query, never>,
-              options?: Omit<TQuery, 'queryKey' | 'queryFn'>
-            ) => TQuery
+          ? {
+              (
+                input: MakeInput<Headers, Params, Query, never>
+              ): QueryOptionsResult<UnwrapCodec<Success>, UnwrapCodec<Error>>
+
+              <TOptions extends object>(
+                input: MakeInput<Headers, Params, Query, never>,
+                options: TOptions
+              ): QueryOptionsResult<
+                UnwrapCodec<Success>,
+                UnwrapCodec<Error>,
+                QueryKey,
+                TOptions
+              >
+            }
           : never
 
         subscriptionOptions: Success extends StreamSse<
@@ -81,18 +121,39 @@ type TanstackQueryOptionsProxyInternal<T> =
               input: MakeInput<Headers, Params, never, Payload>
             ) => Effect<UnwrapCodec<Success>, UnwrapCodec<Error>>
 
+        // mutationOptions: Method extends 'GET'
+        //   ? never
+        //   : <
+        //       TMutation = MutationOptions<
+        //         UnwrapCodec<Success>,
+        //         UnwrapCodec<Error>,
+        //         UnwrapCodec<Payload>
+        //       >,
+        //     >(
+        //       input: MakeInput<Headers, Params, never, never>,
+        //       options?: Omit<TMutation, 'mutationKey' | 'mutationFn'>
+        //     ) => TMutation
         mutationOptions: Method extends 'GET'
           ? never
-          : <
-              TMutation = MutationOptions<
+          : {
+              (
+                input: MakeInput<Headers, Params, never, never>
+              ): MutationOptionsResult<
                 UnwrapCodec<Success>,
+                UnwrapCodec<Payload>,
+                UnwrapCodec<Error>
+              >
+
+              <TOptions extends object>(
+                input: MakeInput<Headers, Params, never, never>,
+                options: TOptions
+              ): MutationOptionsResult<
+                UnwrapCodec<Success>,
+                UnwrapCodec<Payload>,
                 UnwrapCodec<Error>,
-                UnwrapCodec<Payload>
-              >,
-            >(
-              input: MakeInput<Headers, Params, never, never>,
-              options?: Omit<TMutation, 'mutationKey' | 'mutationFn'>
-            ) => TMutation
+                TOptions
+              >
+            }
 
         getQueryKey: Method extends 'GET'
           ? (
@@ -181,21 +242,6 @@ export interface SubscriptionOptions<TData, TError> {
   onConnectionChange?: (
     result: Partial<UseSubscriptionReturns<TData, TError>>
   ) => void
-}
-
-export type QueryOptions<
-  TQueryFnData = unknown,
-  TError = DefaultError,
-  TData = TQueryFnData,
-  TQueryKey extends QueryKey = QueryKey,
-> = QueryObserverOptions<
-  TQueryFnData,
-  TError,
-  TData,
-  TQueryFnData,
-  TQueryKey
-> & {
-  subscribed?: boolean
 }
 
 export type UseSubscriptionReturns<TData, TError> = {

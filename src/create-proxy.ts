@@ -1,6 +1,6 @@
 // oxlint-disable no-underscore-dangle
 
-import type { MutationOptions } from '@tanstack/query-core'
+import type { MutationOptions, QueryOptions } from '@tanstack/query-core'
 import type { Service } from 'effect/Context'
 import type { HttpClientResponse } from 'effect/http/HttpClientResponse'
 import type { ManagedRuntime } from 'effect/ManagedRuntime'
@@ -10,11 +10,7 @@ import * as Fiber from 'effect/Fiber'
 import * as Schedule from 'effect/Schedule'
 import * as Stream from 'effect/Stream'
 
-import type {
-  QueryOptions,
-  SubscriptionOptions,
-  TanstackQueryOptionsProxy,
-} from './types'
+import type { SubscriptionOptions, TanstackQueryOptionsProxy } from './types'
 
 /**
  * Creates a type-safe proxy that bridges Effect `HttpApiClient` endpoints
