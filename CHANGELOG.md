@@ -1,3 +1,9 @@
+## @tiesen/effect-tanstack-query@0.0.26
+
+### Bug Fixes
+
+- Missing type
+
 ## @tiesen/effect-tanstack-query@0.0.25
 
 ### Patch Changes
