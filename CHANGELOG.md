@@ -1,3 +1,9 @@
+## @tiesen/effect-tanstack-query@0.0.27
+
+### Bug Fixes
+
+- preserve multiline SSE events - #29⁠
+
 ## @tiesen/effect-tanstack-query@0.0.26
 
 ### Bug Fixes

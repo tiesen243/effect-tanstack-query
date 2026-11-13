@@ -1,10 +1,10 @@
 core:changelogs:
-  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Bug Fixes\n\n- Missing type\n"
-    filename: 2026-10-09-muzx7lw0.md
+  - content: "---\npackages:\n  npm:@tiesen/effect-tanstack-query:\n    type: patch\n---\n\n## Bug Fixes\n\n- preserve multiline SSE events - #29⁠\n"
+    filename: 2026-11-13-mweq0mda.md
     v: 0.0.0
 core:packages:
   - changelogIds:
-      - 2026-10-09-muzx7lw0.md
+      - 2026-11-13-mweq0mda.md
     id: npm:@tiesen/effect-tanstack-query
     updated: true
 npm:packages:
