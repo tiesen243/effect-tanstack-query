@@ -1,8 +1,11 @@
 name: CI
 
 on:
+  push:
+    branches: ['main']
   pull_request:
-    branches: ['*']
+    branches: ['main']
+  merge_group:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -35,3 +38,11 @@ jobs:
       - uses: ./.github/workflows/setup
       - name: Typecheck
         run: bun typecheck
+
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/workflows/setup
+      - name: Unit Test
+        run: bun test
