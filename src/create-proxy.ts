@@ -6,6 +6,7 @@ import type { HttpClientResponse } from 'effect/http/HttpClientResponse'
 import type { ManagedRuntime } from 'effect/ManagedRuntime'
 
 import * as Effect from 'effect/Effect'
+import * as Sse from 'effect/encoding/Sse'
 import * as Fiber from 'effect/Fiber'
 import * as Schedule from 'effect/Schedule'
 import * as Stream from 'effect/Stream'
@@ -171,21 +172,33 @@ export function createTanstackQueryOptionsProxy<TServiceTag, TService>(
 
                   const source = yield* response.stream.pipe(
                     Stream.decodeText,
-                    Stream.splitLines,
-                    Stream.filter((str) => str.length > 0),
                     Stream.share({ capacity: 'unbounded' })
                   )
 
                   const keepAliveStream = source.pipe(
+                    Stream.splitLines,
                     Stream.filter((data) =>
                       data.startsWith(keepAlive?.message ?? ':keep-alive')
                     ),
                     Stream.timeout(keepAlive?.timeout ?? '10 seconds')
                   )
 
+                  let buffer: string[] = []
+                  const parser = Sse.makeParser((event) => {
+                    if (event._tag === 'Event') buffer.push(event.data)
+                  })
+
                   const dataStream = yield* source.pipe(
-                    Stream.filter((line) => line.startsWith('data:')),
-                    Stream.map((line) => line.slice(5).trim()),
+                    Stream.mapEffect((chunk) =>
+                      Effect.suspend(() => {
+                        const error = parser.feed(chunk)
+                        if (error !== undefined) return Effect.fail(error)
+                        const parsed = buffer
+                        buffer = []
+                        return Effect.succeed(parsed)
+                      })
+                    ),
+                    Stream.flattenIterable,
                     Stream.filter((data) => data.length > 0),
                     Stream.mapEffect((data) =>
                       Effect.orElseSucceed(
