@@ -62,10 +62,10 @@
   "devDependencies": {
     "@types/react": "^19.3.0",
     "@types/vue": "^2.0.0",
-    "oxfmt": "^0.72.0",
-    "oxlint": "^1.87.0",
+    "oxfmt": "^0.78.0",
+    "oxlint": "^1.93.0",
     "tegami": "^1.5.0",
-    "tsdown": "^0.23.0",
+    "tsdown": "^0.23.7",
     "typescript": "^7.0.2"
   },
   "peerDependencies": {
@@ -85,7 +85,7 @@
   "devEngines": {
     "packageManager": {
       "name": "bun",
-      "version": "1.4.2",
+      "version": "1.4.4",
       "onFail": "download"
     }
   },
